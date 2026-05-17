@@ -1,0 +1,7 @@
+{
+  "name": "frontFM",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
