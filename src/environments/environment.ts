@@ -1,4 +1,4 @@
 export const environment = {
-  production: true,
-  apiUrl: '/pipejfdv/api/v1',
+  production: false,
+  apiUrl: 'http://localhost:8080/pipejfdv/api/v1',
 };
