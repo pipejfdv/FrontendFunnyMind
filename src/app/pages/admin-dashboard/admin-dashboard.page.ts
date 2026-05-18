@@ -92,12 +92,30 @@ export class AdminDashboardPage {
   }
 
   private loadTokens(): void {
-    // Tokens would need a dedicated backend endpoint — show empty for now
-    this.tokens = [];
+    try {
+      const logs = JSON.parse(localStorage.getItem('fm_token_logs') || '[]');
+      this.tokens = logs.map((t: any) => ({
+        id: t.id,
+        username: t.username,
+        createdAt: t.createdAt,
+        active: t.active !== false,
+      }));
+    } catch {
+      this.tokens = [];
+    }
   }
 
-  deleteToken(id: string): void {
-    this.api.deleteToken(id).subscribe({ next: () => this.loadTokens() });
+  deleteToken(userId: string): void {
+    this.api.deleteToken(userId).subscribe({
+      next: () => {
+        try {
+          const logs = JSON.parse(localStorage.getItem('fm_token_logs') || '[]');
+          const updated = logs.filter((t: any) => t.id !== userId);
+          localStorage.setItem('fm_token_logs', JSON.stringify(updated));
+        } catch {}
+        this.loadTokens();
+      },
+    });
   }
 
   private loadUsers(): void {

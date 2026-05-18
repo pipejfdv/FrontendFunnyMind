@@ -55,12 +55,28 @@ export class AuthService {
 
         this.currentUser.set(user);
         localStorage.setItem('fm_user', JSON.stringify(user));
+        // Store token metadata for admin dashboard
+        try {
+          const logs = JSON.parse(localStorage.getItem('fm_token_logs') || '[]');
+          logs.unshift({
+            id: idUser,
+            username: user.username,
+            role: user.role,
+            createdAt: new Date().toISOString().replace('T', ' ').substring(0, 19),
+            active: true,
+          });
+          localStorage.setItem('fm_token_logs', JSON.stringify(logs.slice(0, 50)));
+        } catch {}
         return true;
       }),
     );
   }
 
   logout(): void {
+    const tok = this.token();
+    if (tok) {
+      this.api.logout().subscribe();
+    }
     this.currentUser.set(null);
     this.token.set(null);
     localStorage.removeItem('fm_token');

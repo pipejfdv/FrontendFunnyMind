@@ -111,8 +111,12 @@ export class ApiService {
     return this.http.post<any>(`${this.apiUrl}/funnyMind/profiles/create/${childrenId}/${profileName}`, {}).pipe(map(r => r?.data?.id || ''));
   }
 
-  deleteToken(tokenId: string): Observable<boolean> {
-    return this.http.delete<any>(`${this.apiUrl}/auth/deleted/${tokenId}`).pipe(map(() => true));
+  logout(): Observable<boolean> {
+    return this.http.post<any>(`${this.apiUrl}/auth/logout`, {}).pipe(map(() => true));
+  }
+
+  deleteToken(userId: string): Observable<boolean> {
+    return this.http.delete<any>(`${this.apiUrl}/auth/deleted/${userId}`).pipe(map(() => true));
   }
 
   getGameProgress(childId: string, categoryId: string): Observable<any> {
