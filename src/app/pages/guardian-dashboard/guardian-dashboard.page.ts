@@ -5,6 +5,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiService } from '../../core/services/api.service';
+import { extractError } from '../../core/utils/error.utils';
 import { Child } from '../../core/models/user.model';
 import { TCE_QUESTIONS, TceQuestion, calculateTceEstimation } from '../../core/models/registration.model';
 
@@ -165,7 +166,7 @@ export class GuardianDashboardPage {
           this.afterAdd();
         }
       },
-      error: () => { this.submitting = false; this.error = 'Error al crear el niño.'; },
+      error: (err) => { this.submitting = false; this.error = extractError(err, 'Error al crear el nino.'); },
     });
   }
 

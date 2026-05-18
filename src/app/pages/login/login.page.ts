@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { LoadingService } from '../../core/services/loading.service';
+import { extractError } from '../../core/utils/error.utils';
 import { NgIf } from '@angular/common';
 
 @Component({
@@ -36,9 +37,9 @@ export class LoginPage {
           this.error = 'Usuario o contraseña incorrectos';
         }
       },
-      error: () => {
+      error: (err) => {
         this.loading.hide();
-        this.error = 'Error de conexión. Intenta de nuevo.';
+        this.error = extractError(err, 'Error de conexion. Intenta de nuevo.');
       },
     });
   }

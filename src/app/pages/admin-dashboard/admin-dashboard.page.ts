@@ -4,6 +4,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiService } from '../../core/services/api.service';
+import { extractError } from '../../core/utils/error.utils';
 import { User, Child, ChildProgress, GameStat } from '../../core/models/user.model';
 
 @Component({
@@ -48,7 +49,6 @@ export class AdminDashboardPage {
 
   constructor() {
     this.api.getDocumentTypes().subscribe(d => this.documentTypes = d);
-    this.api.getTceClassifications().subscribe(t => this.tceList = t);
     this.api.getCategoriesList().subscribe(cats => {
       if (cats && cats.length > 0) {
         const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D'];
@@ -67,7 +67,12 @@ export class AdminDashboardPage {
     if (section === 'patients') this.loadPatients();
     if (section === 'tokens') this.loadTokens();
     if (section === 'types') this.api.getDocumentTypes().subscribe(d => this.documentTypes = d);
+    if (section === 'tce') this.loadTceList();
     if (section === 'reports') this.loadReports();
+  }
+
+  private loadTceList(): void {
+    this.api.getTceClassifications().subscribe(t => this.tceList = t);
   }
 
   createDoctor(): void {
@@ -87,7 +92,7 @@ export class AdminDashboardPage {
         this.docMessage = '✓ Médico creado exitosamente';
         this.loadUsers();
       },
-      error: () => { this.docMessage = 'Error al crear médico.'; },
+      error: (err) => { this.docMessage = extractError(err, 'Error al crear medico.'); },
     });
   }
 

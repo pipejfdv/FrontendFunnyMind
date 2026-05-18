@@ -6,6 +6,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiService } from '../../core/services/api.service';
 import { RegistrationService } from '../../core/services/registration.service';
+import { extractError } from '../../core/utils/error.utils';
 import {
   WizardData, DocumentType, Relationship, TceClassification,
   TceQuestion, TCE_QUESTIONS, calculateTceEstimation,
@@ -163,9 +164,9 @@ export class WizardPage {
         const route = this.roleRoutes[this.userRole] || '/guardian';
         this.router.navigate([route]);
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
-        this.error = 'Error al guardar los datos. Intenta de nuevo.';
+        this.error = extractError(err, 'Error al guardar los datos. Intenta de nuevo.');
       },
     });
   }

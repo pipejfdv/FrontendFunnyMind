@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
 import { LoadingService } from '../../core/services/loading.service';
+import { extractError } from '../../core/utils/error.utils';
 import { MembershipPlan, MembershipType } from '../../core/models/registration.model';
 
 const MEMBERSHIPS: MembershipPlan[] = [
@@ -102,10 +103,10 @@ export class RegisterPage {
         this.loading = false;
         this.router.navigate(['/login']);
       },
-      error: () => {
+      error: (err) => {
         this.loadingSvc.hide();
         this.loading = false;
-        this.error = 'Error al crear la cuenta. Intenta de nuevo.';
+        this.error = extractError(err, 'Error al crear la cuenta. Intenta de nuevo.');
       },
     });
   }

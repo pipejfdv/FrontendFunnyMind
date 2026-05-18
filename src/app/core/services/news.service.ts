@@ -23,7 +23,7 @@ export class NewsService {
       map(res => {
         if (!res?.data || !Array.isArray(res.data) || res.data.length === 0) return [];
         return res.data.map((item: any) => ({
-          title: item.title || 'Sin título',
+          title: item.title || 'Sin titulo',
           description: item.description || '',
           source: item.source || 'Fuente desconocida',
           image: item.image || '',
