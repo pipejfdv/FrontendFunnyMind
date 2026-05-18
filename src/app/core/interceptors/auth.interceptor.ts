@@ -7,12 +7,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const token = localStorage.getItem('fm_token');
 
-  let cloned = req;
+  let headers: Record<string, string> = {
+    'Accept': 'application/json',
+    'ngrok-skip-browser-warning': 'true',
+  };
   if (token) {
-    cloned = req.clone({
-      setHeaders: { Authorization: `Bearer ${token}` },
-    });
+    headers['Authorization'] = `Bearer ${token}`;
   }
+
+  const cloned = req.clone({ setHeaders: headers });
 
   return next(cloned).pipe(
     catchError((err: HttpErrorResponse) => {
