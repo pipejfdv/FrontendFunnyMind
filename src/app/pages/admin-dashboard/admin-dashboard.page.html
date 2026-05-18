@@ -1,0 +1,378 @@
+<ion-content>
+  <div class="admin">
+    <header class="admin__header">
+      <div>
+        <h1 class="admin__title">Panel de Administración</h1>
+        <p class="admin__sub">{{ auth.currentUser()?.name }}</p>
+      </div>
+      <button (click)="auth.logout()" class="admin__logout">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Salir
+      </button>
+    </header>
+
+    <!-- Cards -->
+    <div class="admin__cards">
+      <button class="admin-card" [class.admin-card--open]="activeSection === 'doctor'" (click)="toggleSection('doctor')">
+        <span class="admin-card__icon">➕</span>
+        <span class="admin-card__label">Agregar Doctor</span>
+      </button>
+      <button class="admin-card" [class.admin-card--open]="activeSection === 'tokens'" (click)="toggleSection('tokens')">
+        <span class="admin-card__icon">🔑</span>
+        <span class="admin-card__label">Tokens</span>
+      </button>
+      <button class="admin-card" [class.admin-card--open]="activeSection === 'users'" (click)="toggleSection('users')">
+        <span class="admin-card__icon">👥</span>
+        <span class="admin-card__label">Usuarios</span>
+      </button>
+      <button class="admin-card" [class.admin-card--open]="activeSection === 'patients'" (click)="toggleSection('patients')">
+        <span class="admin-card__icon">👶</span>
+        <span class="admin-card__label">Pacientes</span>
+      </button>
+      <button class="admin-card" [class.admin-card--open]="activeSection === 'types'" (click)="toggleSection('types')">
+        <span class="admin-card__icon">📋</span>
+        <span class="admin-card__label">Tipos Doc.</span>
+      </button>
+      <button class="admin-card" [class.admin-card--open]="activeSection === 'tce'" (click)="toggleSection('tce')">
+        <span class="admin-card__icon">📊</span>
+        <span class="admin-card__label">Clasif. TCE</span>
+      </button>
+      <button class="admin-card admin-card--wide" [class.admin-card--open]="activeSection === 'reports'" (click)="toggleSection('reports')">
+        <span class="admin-card__icon">📈</span>
+        <span class="admin-card__label">Reportes</span>
+      </button>
+    </div>
+
+    <!-- ───── SECTION: DOCTOR ───── -->
+    <div class="admin-section" *ngIf="activeSection === 'doctor'">
+      <div class="admin-section__inner">
+        <h2 class="admin-section__title">Agregar Doctor</h2>
+        <p class="admin-section__desc">Crea una cuenta de médico con tipo de cuenta <strong>Medic</strong></p>
+        <div class="admin-form">
+          <div class="admin-form__row">
+            <div class="admin-form__field">
+              <label>Usuario *</label>
+              <input [(ngModel)]="docUsername" placeholder="drlopez" />
+            </div>
+            <div class="admin-form__field">
+              <label>Correo electrónico *</label>
+              <input [(ngModel)]="docEmail" type="email" placeholder="drlopez@correo.com" />
+            </div>
+          </div>
+          <div class="admin-form__row">
+            <div class="admin-form__field">
+              <label>Contraseña *</label>
+              <input [(ngModel)]="docPassword" type="password" />
+            </div>
+            <div class="admin-form__field">
+              <label>Teléfono</label>
+              <input [(ngModel)]="docPhone" placeholder="Opcional" />
+            </div>
+          </div>
+          <div class="admin-form__row">
+            <div class="admin-form__field">
+              <label>Nombre *</label>
+              <input [(ngModel)]="docName" placeholder="Dr. Carlos" />
+            </div>
+            <div class="admin-form__field">
+              <label>Apellido *</label>
+              <input [(ngModel)]="docLastname" placeholder="López" />
+            </div>
+          </div>
+          <div class="admin-form__row">
+            <div class="admin-form__field">
+              <label>Tipo documento *</label>
+              <select [(ngModel)]="docDocTypeId">
+                <option value="" disabled selected>Seleccionar</option>
+                <option *ngFor="let d of documentTypes" [value]="d.id">{{ d.type }}</option>
+              </select>
+            </div>
+            <div class="admin-form__field">
+              <label>N° documento *</label>
+              <input [(ngModel)]="docDocNumber" placeholder="Número de identificación" />
+            </div>
+          </div>
+          <div class="admin-form__field">
+            <label>Biografía</label>
+            <input [(ngModel)]="docBiography" placeholder="Breve descripción (opcional)" />
+          </div>
+          <p *ngIf="docMessage" class="admin-form__msg" [class.admin-form__msg--ok]="docMessage.includes('✓')">{{ docMessage }}</p>
+          <button (click)="createDoctor()" class="admin-form__btn">Crear Doctor</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── SECTION: TOKENS ───── -->
+    <div class="admin-section" *ngIf="activeSection === 'tokens'">
+      <div class="admin-section__inner">
+        <h2 class="admin-section__title">Tokens Activos</h2>
+        <div class="admin-list">
+          <div *ngFor="let t of tokens" class="admin-list__item">
+            <div class="admin-list__info">
+              <span class="admin-list__dot" [style.background]="t.active ? '#2ECC71' : '#ccc'"></span>
+              <strong>{{ t.username }}</strong>
+              <span>{{ t.createdAt }}</span>
+            </div>
+            <span class="admin-list__badge" [style.background]="t.active ? '#2ECC71' : '#ccc'">
+              {{ t.active ? 'Activo' : 'Revocado' }}
+            </span>
+            <button *ngIf="t.active" (click)="deleteToken(t.id)" class="admin-list__del" title="Revocar">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2M19 6l-.867 12.142A2 2 0 0116.138 20H7.862a2 2 0 01-1.995-1.858L5 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── SECTION: USERS ───── -->
+    <div class="admin-section" *ngIf="activeSection === 'users'">
+      <div class="admin-section__inner">
+        <h2 class="admin-section__title">Usuarios Registrados</h2>
+        <p class="admin-section__desc">Da clic en un usuario para ver, editar o eliminar</p>
+        <div class="admin-list">
+          <button *ngFor="let u of users" class="admin-list__item admin-list__item--clickable" (click)="openUser(u)">
+            <div class="admin-list__info">
+              <strong>{{ u.name }}</strong>
+              <span>@{{ u.username }}</span>
+            </div>
+            <span class="admin-list__badge" [style.background]="getRoleBadge(u.role)">{{ u.role }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── SECTION: PATIENTS ───── -->
+    <div class="admin-section" *ngIf="activeSection === 'patients'">
+      <div class="admin-section__inner">
+        <h2 class="admin-section__title">Pacientes</h2>
+        <div class="admin-list">
+          <div *ngFor="let p of patients" class="admin-list__item">
+            <div class="admin-list__info">
+              <strong>{{ p.names }} {{ p.lastName }}</strong>
+              <span>{{ calculateAge(p.birthDate) }} años · {{ p.tceClassification.classification }}</span>
+            </div>
+            <button (click)="openPatient(p)" class="admin-list__view">Ver progreso</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── SECTION: DOC TYPES ───── -->
+    <div class="admin-section" *ngIf="activeSection === 'types'">
+      <div class="admin-section__inner">
+        <h2 class="admin-section__title">Tipos de Documento</h2>
+
+        <div class="admin-list" style="margin-bottom: 1rem;">
+          <div *ngFor="let d of documentTypes" class="admin-list__item">
+            <div class="admin-list__info">
+              <strong>{{ d.type }}</strong>
+            </div>
+            <button (click)="startEditDocType(d)" class="admin-list__edit" title="Editar">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button (click)="deleteDocType(d.id)" class="admin-list__del" title="Eliminar">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2M19 6l-.867 12.142A2 2 0 0116.138 20H7.862a2 2 0 01-1.995-1.858L5 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Create / Edit form -->
+        <div class="admin-form__row" *ngIf="!showDocTypeForm">
+          <div class="admin-form__field">
+            <label>Nuevo tipo de documento</label>
+            <input [(ngModel)]="newDocType" placeholder="Ej: Pasaporte" />
+          </div>
+          <button (click)="addDocType()" class="admin-form__btn" style="align-self: flex-end;">Agregar</button>
+        </div>
+
+        <div class="admin-form__row" *ngIf="showDocTypeForm">
+          <div class="admin-form__field">
+            <label>Editar tipo de documento</label>
+            <input [(ngModel)]="editDocTypeValue" placeholder="Nombre del tipo" />
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-self: flex-end;">
+            <button (click)="cancelDocTypeEdit()" class="admin-form__btn" style="background: #f0f0f0; color: #888;">Cancelar</button>
+            <button (click)="saveDocType()" class="admin-form__btn">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── SECTION: TCE ───── -->
+    <div class="admin-section" *ngIf="activeSection === 'tce'">
+      <div class="admin-section__inner">
+        <h2 class="admin-section__title">Clasificaciones TCE</h2>
+        <div class="admin-list">
+          <div *ngFor="let t of tceList" class="admin-list__item">
+            <div class="admin-list__info">
+              <strong>{{ t.classification }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── SECTION: REPORTS ───── -->
+    <div class="admin-section" *ngIf="activeSection === 'reports' && reports">
+      <div class="admin-section__inner">
+        <h2 class="admin-section__title">📈 Reportes de Progreso</h2>
+        <div class="report-cards">
+          <div class="report-card">
+            <span class="report-card__value">{{ reports.totalChildren }}</span>
+            <span class="report-card__label">Niños registrados</span>
+          </div>
+          <div class="report-card">
+            <span class="report-card__value">{{ reports.totalPlayTimeHours }} h</span>
+            <span class="report-card__label">Tiempo total juego</span>
+          </div>
+          <div class="report-card">
+            <span class="report-card__value">{{ reports.avgScore }}</span>
+            <span class="report-card__label">Puntaje promedio</span>
+          </div>
+        </div>
+        <div class="report-section">
+          <h3>Distribución por nivel</h3>
+          <div *ngFor="let l of reports.byLevel" class="report-bar">
+            <span class="report-bar__label">{{ l.level }}</span>
+            <div class="report-bar__track">
+              <div class="report-bar__fill" [style.width.%]="reports.totalChildren ? (l.count / Math.max(reports.totalChildren, 1)) * 100 : 0" [style.background]="getLevelColor(l.level)"></div>
+            </div>
+            <span class="report-bar__count">{{ l.count }} niño{{ l.count !== 1 ? 's' : '' }}</span>
+          </div>
+        </div>
+        <div class="report-section">
+          <h3>XP por categoría</h3>
+          <div *ngFor="let c of reports.byCategory" class="report-bar">
+            <span class="report-bar__label">{{ c.name }}</span>
+            <div class="report-bar__track">
+              <div class="report-bar__fill" [style.width.%]="Math.min(100, (c.xp / 500) * 100)" [style.background]="c.name === 'FUNCIÓN EJECUTIVA' ? '#FF6B6B' : c.name === 'MEMORIA Y ATENCIÓN' ? '#4ECDC4' : '#FFE66D'"></div>
+            </div>
+            <span class="report-bar__count">{{ c.xp }} XP</span>
+          </div>
+        </div>
+        <div class="report-section">
+          <h3>Progreso individual</h3>
+          <div *ngFor="let i of reports.individual" class="report-individual">
+            <div class="report-individual__avatar" [style.background]="i.color + '22'"><span>👶</span></div>
+            <div class="report-individual__info">
+              <strong>{{ i.childName }}</strong>
+              <div class="report-individual__bar">
+                <div class="report-individual__track">
+                  <div class="report-individual__fill" [style.width.%]="Math.min(100, (i.xp / 1000) * 100)" [style.background]="i.color"></div>
+                </div>
+                <span>{{ i.xp }} XP</span>
+              </div>
+            </div>
+            <span class="report-individual__level" [style.background]="i.color">{{ i.level }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── USER MODAL ───── -->
+    <div class="modal-overlay" *ngIf="showUserModal" (click)="closeUser()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal__header">
+          <h2 class="modal__title">Detalle del Usuario</h2>
+          <button (click)="closeUser()" class="modal__close">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="modal__body" *ngIf="selectedUser">
+          <div class="admin-form" *ngIf="selectedUser">
+            <div class="admin-form__field">
+              <label>ID</label>
+              <p class="admin-form__static">{{ selectedUser.id }}</p>
+            </div>
+            <div class="admin-form__field">
+              <label>Rol</label>
+              <p class="admin-form__static">
+                <span class="admin-list__badge" [style.background]="getRoleBadge(selectedUser.role)">{{ selectedUser.role }}</span>
+              </p>
+            </div>
+            <div class="admin-form__field">
+              <label>Nombre</label>
+              <input [(ngModel)]="editName" placeholder="Nombre completo" />
+            </div>
+            <div class="admin-form__field">
+              <label>Usuario</label>
+              <input [(ngModel)]="editUsername" placeholder="Nombre de usuario" />
+            </div>
+          </div>
+        </div>
+        <div class="modal__footer modal__footer--user">
+          <button *ngIf="selectedUser?.role !== 'FMAdmin'" (click)="deleteUser(selectedUser!.id)" class="modal__btn modal__btn--delete">Eliminar</button>
+          <div class="modal__footer-right">
+            <button (click)="closeUser()" class="modal__btn modal__btn--cancel">Cancelar</button>
+            <button (click)="saveUser()" class="modal__btn modal__btn--save">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── PATIENT MODAL ───── -->
+    <div class="modal-overlay" *ngIf="showPatientModal" (click)="closePatient()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal__header">
+          <h2 class="modal__title">Detalle del Paciente</h2>
+          <button (click)="closePatient()" class="modal__close">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="modal__body" *ngIf="selectedPatient">
+          <div class="patient-info">
+            <span class="patient-info__avatar">{{ selectedPatient.avatar || '👶' }}</span>
+            <div>
+              <strong class="patient-info__name">{{ selectedPatient.names }} {{ selectedPatient.lastName }}</strong>
+              <p class="patient-info__meta">{{ calculateAge(selectedPatient.birthDate) }} años · {{ selectedPatient.tceClassification.classification }}</p>
+            </div>
+          </div>
+          <div class="patient-stats" *ngIf="selectedPatient.stats.length">
+            <h3>Resumen de juego</h3>
+            <div class="patient-stats__grid">
+              <div class="patient-stat">
+                <span class="patient-stat__value">{{ patientTotalMinutes() }} min</span>
+                <span class="patient-stat__label">Tiempo total</span>
+              </div>
+              <div class="patient-stat">
+                <span class="patient-stat__value">{{ patientTotalScore() }}</span>
+                <span class="patient-stat__label">Puntaje total</span>
+              </div>
+              <div class="patient-stat">
+                <span class="patient-stat__value">{{ patientBestScore() }}</span>
+                <span class="patient-stat__label">Mejor puntaje</span>
+              </div>
+              <div class="patient-stat">
+                <span class="patient-stat__value">{{ selectedPatient.stats[0].lastPlay }}</span>
+                <span class="patient-stat__label">Última vez</span>
+              </div>
+            </div>
+          </div>
+          <div class="patient-progress" *ngIf="selectedPatient.progress.length">
+            <h3>Progreso por categoría</h3>
+            <div *ngFor="let cat of categories" class="patient-cat">
+              <div class="patient-cat__head">
+                <strong>{{ cat.name }}</strong>
+                <span *ngIf="getProgressForCategory(cat.id, selectedPatient.progress) as pg" class="patient-cat__level" [style.background]="getLevelColor(pg.level)">{{ pg.level }}</span>
+              </div>
+              <div *ngIf="getProgressForCategory(cat.id, selectedPatient.progress) as pg">
+                <div class="patient-cat__bar">
+                  <div class="patient-cat__track">
+                    <div class="patient-cat__fill" [style.width.%]="Math.min(100, (pg.xp / getNextLevelXp(pg.level)) * 100)" [style.background]="getLevelColor(pg.level)"></div>
+                  </div>
+                  <span class="patient-cat__xp">{{ pg.xp }} / {{ getNextLevelXp(pg.level) }} XP</span>
+                </div>
+                <span class="patient-cat__attempts">Intentos hoy: {{ pg.attemptsDaily }}</span>
+              </div>
+              <p *ngIf="!getProgressForCategory(cat.id, selectedPatient.progress)" class="patient-cat__empty">Sin datos</p>
+            </div>
+          </div>
+          <p *ngIf="!selectedPatient.stats.length && !selectedPatient.progress.length" class="patient-empty">Este niño aún no tiene datos de juego registrados.</p>
+        </div>
+        <div class="modal__footer modal__footer--patient">
+          <button (click)="closePatient()" class="modal__btn modal__btn--cancel">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

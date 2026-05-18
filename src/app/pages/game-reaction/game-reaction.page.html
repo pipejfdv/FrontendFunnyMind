@@ -1,0 +1,92 @@
+<ion-content>
+  <div class="reaction">
+    <!-- Header -->
+    <header class="reaction__header">
+      <a routerLink="/child" class="reaction__back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </a>
+      <div class="reaction__info">
+        <span class="reaction__title">Tiro al Blanco</span>
+        <span class="reaction__child-name" *ngIf="childName">{{ childName }}</span>
+        <span class="reaction__level">Nivel {{ level }}</span>
+      </div>
+      <div class="reaction__stats">
+        <div class="reaction__stat">
+          <span class="reaction__stat-value">{{ timeLeft }}s</span>
+          <span class="reaction__stat-label">Tiempo</span>
+        </div>
+        <div class="reaction__stat">
+          <span class="reaction__stat-value">{{ hits }}</span>
+          <span class="reaction__stat-label">Aciertos</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Play area -->
+    <div class="reaction__area" *ngIf="playing">
+      <button *ngIf="target"
+              class="target"
+              [style.left.%]="target.x"
+              [style.top.%]="target.y"
+              [class.target--exploding]="target.exploding"
+              (click)="hitTarget()"
+              type="button">
+        <span class="target__emoji">🎯</span>
+      </button>
+
+      <div class="reaction__hint">
+        Toca las dianas antes de que desaparezcan
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="reaction__overlay" *ngIf="showInstructions">
+      <div class="reaction__modal">
+        <span class="reaction__modal-icon">🎯</span>
+        <h2 class="reaction__modal-title">Tiro al Blanco</h2>
+        <div class="reaction__modal-text">
+          <p>Toca <strong>la mayor cantidad de dianas</strong> posible antes de que se acabe el tiempo.</p>
+          <ul>
+            <li>Cada diana aparece por <strong>pocos segundos</strong></li>
+            <li>Si no la tocas a tiempo, cuenta como fallo</li>
+            <li>Cada nivel las dianas duran <strong>menos tiempo</strong></li>
+            <li>Tienes <strong>{{ GAME_DURATION }} segundos</strong> por ronda</li>
+          </ul>
+          <p class="reaction__modal-tip">¡Concéntrate y sé rápido! ⚡</p>
+        </div>
+        <button (click)="closeInstructions()" class="reaction__modal-btn">¡Comenzar!</button>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="reaction__overlay" *ngIf="showResult">
+      <div class="reaction__result">
+        <span class="reaction__result-icon">⏰</span>
+        <h2 class="reaction__result-title">¡Tiempo!</h2>
+        <p class="reaction__result-sub">Nivel {{ level }} completado</p>
+        <div class="reaction__result-stats">
+          <div class="reaction__result-stat">
+            <span class="reaction__result-value reaction__result-value--hit">{{ hits }}</span>
+            <span class="reaction__result-label">Aciertos</span>
+          </div>
+          <div class="reaction__result-stat">
+            <span class="reaction__result-value reaction__result-value--miss">{{ misses }}</span>
+            <span class="reaction__result-label">Fallos</span>
+          </div>
+          <div class="reaction__result-stat">
+            <span class="reaction__result-value">{{ accuracy }}%</span>
+            <span class="reaction__result-label">Precisión</span>
+          </div>
+        </div>
+        <div class="reaction__result-buttons">
+          <button *ngIf="levelIndex < totalLevels - 1" (click)="nextLevel()" class="reaction__result-btn reaction__result-btn--primary">
+            Siguiente nivel →
+          </button>
+          <button (click)="nextLevel()" class="reaction__result-btn reaction__result-btn--secondary">
+            {{ levelIndex >= totalLevels - 1 ? 'Jugar de nuevo' : 'Repetir nivel' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

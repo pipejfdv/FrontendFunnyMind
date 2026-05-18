@@ -1,0 +1,90 @@
+<ion-content>
+  <div class="memory">
+    <!-- Header -->
+    <header class="memory__header">
+      <a routerLink="/child" class="memory__back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </a>
+      <div class="memory__info">
+        <span class="memory__title">Los Pares</span>
+        <span class="memory__child-name" *ngIf="childName">{{ childName }}</span>
+        <span class="memory__level">Nivel {{ level }} · {{ totalPairs }} pares</span>
+      </div>
+      <div class="memory__stats">
+        <div class="memory__stat">
+          <span class="memory__stat-value">{{ moves }}</span>
+          <span class="memory__stat-label">Movimientos</span>
+        </div>
+        <div class="memory__stat">
+          <span class="memory__stat-value">{{ pairsFound }}/{{ totalPairs }}</span>
+          <span class="memory__stat-label">Pares</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Board -->
+    <div class="memory__board">
+      <button *ngFor="let card of cards; trackBy: trackByCardId"
+              class="card"
+              [class.card--flipped]="card.flipped || card.matched"
+              [class.card--matched]="card.matched"
+              [class.card--disabled]="isChecking"
+              (click)="flipCard(card)"
+              type="button">
+        <div class="card__inner">
+          <div class="card__front">
+            <img [src]="card.image" [alt]="'Carta ' + card.pairId" class="card__img" />
+          </div>
+          <div class="card__back">
+            <img src="assets/cartas/reverso.jpg" alt="?" class="card__img" />
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Instructions -->
+    <div class="memory__overlay" *ngIf="showInstructions">
+      <div class="memory__modal">
+        <span class="memory__modal-icon">🃏</span>
+        <h2 class="memory__modal-title">Los Pares</h2>
+        <div class="memory__modal-text">
+          <p>Encuentra <strong>todas las parejas</strong> de cartas iguales.</p>
+          <ul>
+            <li>Voltea <strong>dos cartas</strong> por turno</li>
+            <li>Si son iguales, se quedan descubiertas</li>
+            <li>Si no, se volverán a ocultar</li>
+            <li>Hay <strong>{{ totalLevels }} niveles</strong> con más cartas cada vez</li>
+          </ul>
+          <p class="memory__modal-tip">¡Usa tu memoria y concéntrate! 🧠</p>
+        </div>
+        <button (click)="closeInstructions()" class="memory__modal-btn">¡Comenzar!</button>
+      </div>
+    </div>
+
+    <!-- Win -->
+    <div class="memory__overlay" *ngIf="showWin">
+      <div class="memory__win">
+        <span class="memory__win-icon">🎉</span>
+        <h2 class="memory__win-title">¡Completaste el nivel {{ level }}!</h2>
+        <div class="memory__win-stats">
+          <div class="memory__win-stat">
+            <span class="memory__win-stat-value">{{ moves }}</span>
+            <span class="memory__win-stat-label">Movimientos</span>
+          </div>
+          <div class="memory__win-stat">
+            <span class="memory__win-stat-value">{{ pairsFound }}/{{ totalPairs }}</span>
+            <span class="memory__win-stat-label">Pares</span>
+          </div>
+        </div>
+        <div class="memory__win-buttons">
+          <button *ngIf="levelIndex < totalLevels - 1" (click)="nextLevel()" class="memory__win-btn memory__win-btn--primary">
+            Siguiente nivel →
+          </button>
+          <button (click)="nextLevel()" class="memory__win-btn memory__win-btn--secondary">
+            {{ levelIndex >= totalLevels - 1 ? 'Jugar de nuevo' : 'Reiniciar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

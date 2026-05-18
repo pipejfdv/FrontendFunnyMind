@@ -1,0 +1,164 @@
+<ion-content>
+  <div class="medic">
+    <header class="medic__header">
+      <div>
+        <h1 class="medic__title">Panel Clínico</h1>
+        <p class="medic__sub">{{ auth.currentUser()?.name }}</p>
+      </div>
+      <button (click)="auth.logout()" class="medic__logout">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Salir
+      </button>
+    </header>
+
+    <!-- Loading -->
+    <div class="medic__loading" *ngIf="loading">
+      <div class="medic__spinner"></div>
+      <p>Cargando noticias...</p>
+    </div>
+
+    <div class="medic__layout" *ngIf="!loading">
+      <!-- LEFT: News -->
+      <section class="medic__news">
+        <h2 class="medic__section-title">Noticias de Interés</h2>
+
+        <!-- Tabs -->
+        <div class="news-tabs">
+          <button *ngFor="let cat of categories"
+                  class="news-tab"
+                  [class.news-tab--active]="activeCategory === cat"
+                  (click)="selectCategory(cat)">
+            <span>{{ catLabels[cat].icon }}</span>
+            {{ catLabels[cat].label }}
+          </button>
+        </div>
+
+        <!-- Articles -->
+        <div class="news-list">
+          <a *ngFor="let article of currentNews"
+             [href]="article.url"
+             target="_blank"
+             class="news-card">
+            <div class="news-card__content">
+              <h3 class="news-card__title">{{ article.title }}</h3>
+              <p class="news-card__source">{{ article.source }} · {{ article.published_at }}</p>
+              <p class="news-card__desc">{{ article.description }}</p>
+              <span class="news-card__link">Leer más →</span>
+            </div>
+          </a>
+          <div *ngIf="currentNews.length === 0" class="news-empty">
+            No se encontraron noticias relevantes
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Patients -->
+      <aside class="medic__patients-panel">
+        <h2 class="medic__section-title">Mis Pacientes</h2>
+
+        <div class="medic__patients-list">
+          <button *ngFor="let child of children"
+                  class="patient-row"
+                  (click)="openPatient(child)">
+            <span class="patient-row__avatar">{{ child.avatar || '👶' }}</span>
+            <div class="patient-row__info">
+              <strong class="patient-row__name">{{ child.names }} {{ child.lastName }}</strong>
+              <span class="patient-row__meta">{{ child.age || calculateAge(child.birthDate) || '?' }} años · {{ child.tceClassification.classification }}</span>
+            </div>
+            <span class="patient-row__btn">Ver</span>
+          </button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- PATIENT MODAL -->
+  <div class="modal-overlay" *ngIf="showPatientModal" (click)="closePatient()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h2 class="modal__title">Detalle del Paciente</h2>
+        <button (click)="closePatient()" class="modal__close">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="modal__body" *ngIf="patientView">
+        <div class="patient-info">
+          <span class="patient-info__avatar">{{ patientView.avatar || '👶' }}</span>
+          <div>
+            <strong class="patient-info__name">{{ patientView.names }} {{ patientView.lastName }}</strong>
+            <p class="patient-info__meta">{{ patientView.age }} años · {{ patientView.tceClassification.classification }}</p>
+          </div>
+        </div>
+
+        <h3 class="modal__section-title">Progreso Terapéutico</h3>
+        <div *ngFor="let p of patientView.progress" class="progress-item">
+          <div class="progress-item__head">
+            <strong class="progress-item__cat">{{ getCategoryName(p.categoryId) }}</strong>
+            <span class="progress-item__badge" [style.background]="getLevelColor(p.level)">{{ p.level }}</span>
+          </div>
+          <div class="progress-item__bar-info">
+            <span class="progress-item__xp">{{ p.xp }} XP</span>
+            <span class="progress-item__attempts">Intentos hoy: {{ p.attemptsDaily }}</span>
+          </div>
+          <div class="progress-item__track">
+            <div class="progress-item__fill" [style.width.%]="Math.min(100, (p.xp / getNextLevelXp(p.level)) * 100)" [style.background]="getLevelColor(p.level)"></div>
+          </div>
+        </div>
+
+        <div *ngIf="!patientView.progress.length" class="empty-state">
+          Este paciente aún no tiene datos de progreso.
+        </div>
+
+        <button (click)="openCommentModal()" class="comment-btn">
+          💬 Agregar comentario clínico
+        </button>
+
+        <!-- TCE Classification Update -->
+        <div class="tce-update" *ngIf="tceClassifications.length > 0">
+          <h3 class="modal__section-title">Clasificación TCE</h3>
+          <div class="tce-update__row">
+            <select [(ngModel)]="selectedTceId" class="tce-update__select">
+              <option value="" disabled selected>Selecciona clasificación</option>
+              <option *ngFor="let t of tceClassifications" [value]="t.id">{{ t.classification }}</option>
+            </select>
+            <button (click)="updateTce()" class="tce-update__btn" [disabled]="!selectedTceId || tceUpdating">
+              {{ tceUpdating ? 'Guardando...' : 'Actualizar' }}
+            </button>
+          </div>
+          <p *ngIf="tceUpdateMessage" class="tce-update__msg">{{ tceUpdateMessage }}</p>
+        </div>
+      </div>
+
+      <div class="modal__footer">
+        <button (click)="closePatient()" class="modal__btn modal__btn--cancel">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMENT MODAL -->
+  <div class="modal-overlay" *ngIf="showCommentModal" (click)="closeCommentModal()">
+    <div class="modal modal--small" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h2 class="modal__title">💬 Comentarios Clínicos</h2>
+        <button (click)="closeCommentModal()" class="modal__close">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="comment-placeholder">
+          <span class="comment-placeholder__icon">📝</span>
+          <p class="comment-placeholder__text">
+            Esta función estará disponible en la <strong>próxima versión</strong> de FunnyMind.
+          </p>
+          <p class="comment-placeholder__sub">
+            Podrás agregar notas clínicas y observaciones sobre la evolución de cada paciente.
+          </p>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button (click)="closeCommentModal()" class="modal__btn modal__btn--cancel">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</ion-content>

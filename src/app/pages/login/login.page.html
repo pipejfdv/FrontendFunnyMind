@@ -1,0 +1,53 @@
+<ion-content>
+  <div class="login">
+    <div class="login__bg"></div>
+    <div class="login__card">
+      <a routerLink="/" class="login__back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Volver
+      </a>
+
+      <div class="login__header">
+        <span class="login__icon">🧠</span>
+        <h1 class="login__title">FunnyMind</h1>
+        <p class="login__subtitle">Ingresa para continuar</p>
+      </div>
+
+      <form (ngSubmit)="login()" class="login__form">
+        <div class="login__field">
+          <label class="login__label">Usuario</label>
+          <input
+            [(ngModel)]="username"
+            name="username"
+            type="text"
+            class="login__input"
+            placeholder="Tu nombre de usuario"
+            autocomplete="username"
+            required
+          />
+        </div>
+        <div class="login__field">
+          <label class="login__label">Contraseña</label>
+          <input
+            [(ngModel)]="password"
+            name="password"
+            type="password"
+            class="login__input"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <p *ngIf="error" class="login__error">{{ error }}</p>
+
+        <button type="submit" class="login__btn">Ingresar</button>
+      </form>
+
+      <div class="login__register">
+        <p>¿No tienes cuenta?</p>
+        <a routerLink="/register" class="login__register-btn">Registrarse</a>
+      </div>
+    </div>
+  </div>
+</ion-content>

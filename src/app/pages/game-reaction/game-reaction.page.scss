@@ -1,0 +1,178 @@
+.reaction {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #FFF0E6 0%, #FFF8E1 50%, #F0FFF4 100%);
+}
+
+/* ─── HEADER ─── */
+.reaction__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.reaction__back {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: #f0f0f0; color: #666;
+  text-decoration: none; flex-shrink: 0;
+  transition: all 0.2s;
+}
+.reaction__back:hover { background: var(--coral-soft); color: var(--coral); }
+.reaction__info { display: flex; flex-direction: column; }
+.reaction__title {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.1rem; font-weight: 600; color: var(--dark); line-height: 1.2;
+}
+.reaction__level { font-size: 0.75rem; color: #999; }
+.reaction__stats { display: flex; gap: 1rem; margin-left: auto; }
+.reaction__stat { text-align: center; }
+.reaction__stat-label {
+  display: block; font-size: 0.65rem; color: #aaa;
+  text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;
+}
+.reaction__stat-value {
+  display: block; font-family: 'Fredoka', sans-serif;
+  font-size: 1.3rem; font-weight: 700; color: var(--dark);
+}
+
+/* ─── PLAY AREA ─── */
+.reaction__area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.target {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  transform: translate(-50%, -50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  animation: targetPop 0.3s ease;
+  z-index: 5;
+}
+.target--exploding {
+  animation: targetExplode 0.2s ease forwards;
+  pointer-events: none;
+}
+
+.target__emoji {
+  font-size: 44px;
+  line-height: 1;
+  display: block;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+  transition: transform 0.1s;
+}
+.target:hover .target__emoji {
+  transform: scale(1.15);
+}
+.target:active .target__emoji {
+  transform: scale(0.9);
+}
+
+@keyframes targetPop {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  60% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+@keyframes targetExplode {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+}
+
+.reaction__hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  color: #ccc;
+  white-space: nowrap;
+}
+
+/* ─── OVERLAYS ─── */
+.reaction__overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; padding: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.reaction__modal {
+  background: white; border-radius: var(--radius-xl);
+  padding: 2.5rem 2rem; max-width: 400px; width: 100%;
+  text-align: center; animation: slideUp 0.4s ease;
+}
+.reaction__modal-icon { font-size: 3.5rem; display: block; margin-bottom: 0.5rem; }
+.reaction__modal-title {
+  font-family: 'Fredoka', sans-serif; font-size: 1.8rem; color: var(--dark); margin: 0 0 1rem;
+}
+.reaction__modal-text { text-align: left; margin-bottom: 1.5rem; }
+.reaction__modal-text p { font-size: 0.9rem; line-height: 1.6; color: #555; margin: 0 0 0.75rem; }
+.reaction__modal-text ul { padding-left: 1.2rem; margin: 0 0 1rem; }
+.reaction__modal-text li { font-size: 0.85rem; color: #666; padding: 0.2rem 0; }
+.reaction__modal-tip { text-align: center; color: var(--coral) !important; font-weight: 700; font-size: 0.95rem !important; }
+.reaction__modal-btn {
+  font-family: 'Fredoka', sans-serif; font-size: 1.1rem; font-weight: 600;
+  padding: 0.8rem 2.5rem; background: var(--coral); color: white; border: none;
+  border-radius: 60px; cursor: pointer; transition: all 0.3s;
+  box-shadow: 0 8px 25px rgba(255,107,107,0.35);
+}
+.reaction__modal-btn:hover { transform: translateY(-3px); }
+
+/* Result */
+.reaction__result {
+  background: white; border-radius: var(--radius-xl);
+  padding: 2rem; max-width: 380px; width: 100%;
+  text-align: center; animation: slideUp 0.5s ease;
+}
+.reaction__result-icon { font-size: 4rem; display: block; margin-bottom: 0.5rem; }
+.reaction__result-title {
+  font-family: 'Fredoka', sans-serif; font-size: 1.8rem; color: var(--dark); margin: 0;
+}
+.reaction__result-sub { color: #999; font-size: 0.9rem; margin: 0.2rem 0 1.5rem; }
+.reaction__result-stats {
+  display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1.5rem;
+}
+.reaction__result-stat { text-align: center; }
+.reaction__result-value {
+  display: block; font-family: 'Fredoka', sans-serif;
+  font-size: 1.6rem; font-weight: 700; color: var(--dark);
+}
+.reaction__result-value--hit { color: #2ECC71; }
+.reaction__result-value--miss { color: var(--coral); }
+.reaction__result-label { font-size: 0.72rem; color: #aaa; text-transform: uppercase; font-weight: 700; }
+.reaction__result-buttons { display: flex; flex-direction: column; gap: 0.75rem; }
+.reaction__result-btn {
+  font-family: 'Fredoka', sans-serif; font-size: 1rem; font-weight: 600;
+  padding: 0.7rem 2rem; border: none; border-radius: 60px; cursor: pointer; transition: all 0.3s;
+}
+.reaction__result-btn--primary { background: var(--coral); color: white; box-shadow: 0 8px 25px rgba(255,107,107,0.35); }
+.reaction__result-btn--primary:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(255,107,107,0.5); }
+.reaction__result-btn--secondary { background: #f0f0f0; color: #666; }
+.reaction__result-btn--secondary:hover { background: #e0e0e0; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 500px) {
+  .target { width: 60px; height: 60px; }
+  .target__emoji { font-size: 36px; }
+}

@@ -1,0 +1,200 @@
+<ion-content>
+  <div class="guardian">
+    <nav class="guardian__nav">
+      <a routerLink="/guardian/stats" class="guardian__nav-item" *ngIf="auth.currentUser()?.role === 'PremiumUser'">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        Estadísticas
+      </a>
+      <a routerLink="/guardian/edit" class="guardian__nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Editar info
+      </a>
+      <button (click)="auth.logout()" class="guardian__nav-item guardian__nav-item--logout">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Salir
+      </button>
+    </nav>
+
+    <main class="guardian__main">
+      <h1 class="guardian__title">¿Quién va a jugar hoy?</h1>
+      <p class="guardian__sub">Selecciona el perfil del niño</p>
+
+      <div class="guardian__profiles">
+        <button *ngFor="let child of children"
+           class="profile-card"
+           (click)="selectChild(child)">
+          <div class="profile-card__avatar">
+            <span>{{ child.avatar || '👶' }}</span>
+          </div>
+          <span class="profile-card__name">{{ child.names }}</span>
+          <span class="profile-card__badge">{{ child.tceClassification.classification }}</span>
+        </button>
+
+        <!-- Add child -->
+        <div class="profile-card profile-card--add" (click)="openModal()">
+          <div class="profile-card__avatar profile-card__avatar--add">
+            <span>+</span>
+          </div>
+          <span class="profile-card__name">Añadir niño</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ADD CHILD MODAL -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+
+      <!-- Header -->
+      <div class="modal__header">
+        <h2 class="modal__title">✚ Añadir nuevo niño</h2>
+        <button (click)="closeModal()" class="modal__close">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Stepper -->
+      <div class="stepper">
+        <div class="stepper__item">
+          <div class="stepper__circle"
+               [class.stepper__circle--done]="step > 1"
+               [class.stepper__circle--active]="step === 1">1</div>
+          <span class="stepper__label">Relación</span>
+        </div>
+        <div class="stepper__line" [class.stepper__line--done]="step > 2"></div>
+        <div class="stepper__item">
+          <div class="stepper__circle"
+               [class.stepper__circle--done]="step > 2"
+               [class.stepper__circle--active]="step === 2">2</div>
+          <span class="stepper__label">Datos</span>
+        </div>
+        <div class="stepper__line" [class.stepper__line--done]="step > 3"></div>
+        <div class="stepper__item">
+          <div class="stepper__circle"
+               [class.stepper__circle--active]="step === 3">3</div>
+          <span class="stepper__label">TCE</span>
+        </div>
+      </div>
+
+      <!-- Step 1: Relationship -->
+      <div class="modal__body" *ngIf="step === 1">
+        <p class="modal__step-desc">¿Qué parentesco tienes con el niño?</p>
+        <div class="rel-grid">
+          <button *ngFor="let r of relationships"
+                  class="rel-opt"
+                  [class.rel-opt--sel]="relationshipId === r.id"
+                  (click)="relationshipId = r.id">
+            {{ r.relationship }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Child data -->
+      <div class="modal__body" *ngIf="step === 2">
+        <p class="modal__step-desc">Datos del niño</p>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Nombres *</label>
+            <input [(ngModel)]="childNames" type="text" placeholder="Nombres" />
+          </div>
+          <div class="form-field">
+            <label>Apellidos *</label>
+            <input [(ngModel)]="childLastName" type="text" placeholder="Apellidos" />
+          </div>
+          <div class="form-field form-field--full">
+            <label>Fecha de nacimiento *</label>
+            <input [(ngModel)]="birthDate" type="date" />
+          </div>
+          <div class="form-field">
+            <label>Tipo documento *</label>
+            <select [(ngModel)]="docTypeId">
+              <option value="" disabled selected>Selecciona</option>
+              <option *ngFor="let d of documentTypes" [value]="d.id">{{ d.type }}</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>N° documento *</label>
+            <input [(ngModel)]="docNumber" type="text" placeholder="Número de identificación" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: TCE -->
+      <div class="modal__body" *ngIf="step === 3">
+
+        <!-- Without questionnaire -->
+        <div *ngIf="!showQuestionnaire">
+          <p class="modal__step-desc">Clasificación del TCE</p>
+          <div class="form-field form-field--full">
+            <select [(ngModel)]="tceClassificationId">
+              <option value="" disabled selected>Selecciona la clasificación</option>
+              <option *ngFor="let t of tceClassifications" [value]="t.id">{{ t.classification }}</option>
+            </select>
+          </div>
+
+          <div class="divider"><span>o</span></div>
+
+          <button (click)="startQuestionnaire()" class="tce-help-btn">
+            Ayúdame a identificarla
+          </button>
+        </div>
+
+        <!-- Questionnaire -->
+        <div *ngIf="showQuestionnaire">
+          <button (click)="cancelQuestionnaire()" class="qa-back">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Volver
+          </button>
+
+          <div *ngFor="let q of tceQuestions; let qi = index" class="qa-q">
+            <p class="qa-q__text">{{ qi + 1 }}. {{ q.question }}</p>
+            <div class="qa-q__opts">
+              <label *ngFor="let o of q.options" class="qa-opt"
+                     [class.qa-opt--sel]="questionnaireAnswers[qi] === o.value">
+                <input type="radio" [name]="'aq' + qi" [value]="o.value"
+                       (change)="questionnaireAnswers[qi] = o.value" hidden />
+                <span>{{ o.label }}</span>
+              </label>
+            </div>
+          </div>
+
+          <button (click)="calculateEstimation()" class="qa-calc"
+                  [disabled]="!allQuestionsAnswered">
+            Calcular clasificación
+          </button>
+
+          <div *ngIf="tceEstimation" class="qa-result">
+            <strong>Resultado:</strong>
+            <span class="qa-result__value">{{ tceEstimation }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal__footer">
+        <button (click)="prevStep()" class="modal__btn modal__btn--prev"
+                [disabled]="step === 1">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+
+        <div class="modal__footer-right">
+          <button (click)="closeModal()" class="modal__btn modal__btn--cancel">Cancelar</button>
+
+          <button *ngIf="step < 3" (click)="nextStep()" class="modal__btn modal__btn--next"
+                  [disabled]="(step === 1 && !canProceedStep1) || (step === 2 && !canProceedStep2)">
+            Siguiente
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+
+          <button *ngIf="step === 3" (click)="confirmAdd()" class="modal__btn modal__btn--finish"
+                  [disabled]="!canProceedStep3">
+            Crear niño
+          </button>
+        </div>
+      </div>
+
+      <p *ngIf="error" class="modal__error">{{ error }}</p>
+    </div>
+  </div>
+</ion-content>

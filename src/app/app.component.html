@@ -1,3 +1,9 @@
 <ion-app>
+  <div class="loading-overlay" *ngIf="loading.isLoading()">
+    <div class="loading-box">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">{{ loading.message() }}</p>
+    </div>
+  </div>
   <ion-router-outlet></ion-router-outlet>
 </ion-app>

@@ -1,2 +1,25 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+:root {
+  --coral: #FF6B6B;
+  --coral-soft: #FFE0E0;
+  --teal: #4ECDC4;
+  --teal-soft: #D4F5F2;
+  --yellow: #FFE66D;
+  --yellow-soft: #FFF8D6;
+  --purple-soft: #f0e6ff;
+  --dark: #2D3436;
+  --bg-warm: #FFF8F0;
+  --bg-card: #ffffff;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 8px 30px rgba(0,0,0,0.08);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,0.1);
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --font-display: 'Fredoka', sans-serif;
+  --font-body: 'Nunito', sans-serif;
+}
+
+ion-content {
+  --background: var(--bg-warm);
+}

@@ -1,0 +1,77 @@
+<ion-content>
+  <div class="stats">
+    <a routerLink="/guardian" class="stats__back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Volver
+    </a>
+
+    <h1 class="stats__title">Estadísticas</h1>
+    <p class="stats__sub">Progreso terapéutico de los niños</p>
+
+    <!-- Child selector -->
+    <div class="stats__tabs" *ngIf="children.length > 1">
+      <button *ngFor="let child of children"
+              class="stats__tab"
+              [class.stats__tab--active]="selectedChild?.id === child.id"
+              (click)="selectChild(child)">
+        {{ child.names }}
+      </button>
+    </div>
+
+    <div *ngIf="selectedChild" class="stats__content">
+      <div class="stats__header">
+        <h2>{{ selectedChild.names }} {{ selectedChild.lastName }}</h2>
+        <span class="stats__tce">{{ selectedChild.tceClassification.classification }}</span>
+        <button (click)="goToGames(selectedChild)" class="stats__play-btn">Jugar</button>
+      </div>
+
+      <div *ngFor="let cat of categories" class="stat-card">
+        <div class="stat-card__head">
+          <h3>{{ cat.name }}</h3>
+          <p>{{ cat.description }}</p>
+        </div>
+
+        <ng-container *ngIf="getProgressForCategory(cat.id) as prog">
+          <div class="stat-card__bar">
+            <div class="stat-card__track">
+              <div class="stat-card__fill"
+                   [style.width.%]="Math.min(100, (prog.xp / getNextLevelXp(prog.level)) * 100)"
+                   [style.background]="getLevelColor(prog.level)">
+              </div>
+            </div>
+            <span class="stat-card__xp">{{ prog.xp }} / {{ getNextLevelXp(prog.level) }} XP</span>
+          </div>
+          <div class="stat-card__bottom">
+            <span class="stat-card__level" [style.background]="getLevelColor(prog.level)">{{ prog.level }}</span>
+            <span class="stat-card__attempts">Intentos hoy: {{ prog.attemptsDaily }}</span>
+          </div>
+        </ng-container>
+
+        <div *ngIf="!getProgressForCategory(cat.id)" class="stat-card__empty">
+          Aún no hay datos de progreso
+        </div>
+      </div>
+
+      <!-- Appointments -->
+      <button (click)="showAppointmentModal = true" class="stats__appointment">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Agendar cita médica
+      </button>
+    </div>
+  </div>
+
+  <!-- Appointment Modal -->
+  <div class="app-modal" *ngIf="showAppointmentModal" (click)="showAppointmentModal = false">
+    <div class="app-modal__box" (click)="$event.stopPropagation()">
+      <span class="app-modal__icon">📅</span>
+      <h2 class="app-modal__title">Agendar Cita Médica</h2>
+      <p class="app-modal__text">
+        Esta función estará disponible en la <strong>próxima versión</strong> de FunnyMind.
+      </p>
+      <p class="app-modal__subtext">
+        Estamos trabajando para ofrecerte acceso directo a especialistas en TCE.
+      </p>
+      <button (click)="showAppointmentModal = false" class="app-modal__btn">Aceptar</button>
+    </div>
+  </div>
+</ion-content>

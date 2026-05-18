@@ -1,0 +1,119 @@
+<ion-content>
+  <div class="edit">
+    <a routerLink="/guardian" class="edit__back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Volver
+    </a>
+
+    <div *ngIf="loading" class="edit__loading">Cargando...</div>
+
+    <ng-container *ngIf="!loading">
+      <h1 class="edit__title">Editar Información</h1>
+      <p class="edit__sub">Actualiza tus datos personales</p>
+
+      <section class="edit__section">
+        <h2 class="edit__section-title">Datos del Tutor</h2>
+        <div class="edit__fields">
+          <div class="edit__field">
+            <label>Nombre</label>
+            <input [(ngModel)]="name" type="text" placeholder="Tu nombre" />
+          </div>
+          <div class="edit__field">
+            <label>Apellido</label>
+            <input [(ngModel)]="lastname" type="text" placeholder="Tu apellido" />
+          </div>
+          <div class="edit__field">
+            <label>Teléfono</label>
+            <input [(ngModel)]="phone" type="tel" placeholder="Número de contacto" />
+          </div>
+          <div class="edit__field">
+            <label>Biografía</label>
+            <textarea [(ngModel)]="biography" placeholder="Cuéntanos algo sobre ti" rows="3"></textarea>
+          </div>
+        </div>
+
+        <button (click)="save()" class="edit__btn">
+          {{ saved ? '✓ Guardado' : 'Guardar cambios' }}
+        </button>
+      </section>
+
+      <section class="edit__section">
+        <h2 class="edit__section-title">Mis Hijos</h2>
+
+        <div *ngIf="children.length === 0" class="edit__empty">
+          No hay niños registrados.
+        </div>
+
+        <div *ngFor="let child of children" class="child-card">
+          <div class="child-card__avatar">{{ '👶' }}</div>
+          <div class="child-card__info">
+            <strong class="child-card__name">{{ child.names }} {{ child.lastName }}</strong>
+            <span class="child-card__meta">{{ child.age || '—' }} años · {{ child.tceClassification.classification }}</span>
+            <span class="child-card__meta" *ngIf="child.profileName">Perfil: "{{ child.profileName }}"</span>
+          </div>
+          <div class="child-card__actions">
+            <button (click)="openEdit(child)" class="child-card__btn child-card__btn--edit" title="Editar">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button (click)="confirmDelete(child)" class="child-card__btn child-card__btn--delete" title="Eliminar">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2M19 6l-.867 12.142A2 2 0 0116.138 20H7.862a2 2 0 01-1.995-1.858L5 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal-overlay" *ngIf="showEditModal" (click)="closeEdit()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h2 class="modal__title">Editar {{ editingChild?.names }}</h2>
+        <button (click)="closeEdit()" class="modal__close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="modal__body">
+        <div class="edit__field">
+          <label>Nombre del perfil</label>
+          <input [(ngModel)]="editProfileName" type="text" placeholder="Nombre del perfil" />
+        </div>
+        <div class="edit__field">
+          <label>Nombres del niño</label>
+          <input [(ngModel)]="editChildNames" type="text" placeholder="Nombres" />
+        </div>
+        <div class="edit__field">
+          <label>Apellidos del niño</label>
+          <input [(ngModel)]="editChildLastName" type="text" placeholder="Apellidos" />
+        </div>
+      </div>
+
+      <div class="modal__footer">
+        <button (click)="closeEdit()" class="modal__btn modal__btn--cancel">Cancelar</button>
+        <button (click)="saveEdit()" class="modal__btn modal__btn--save">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm -->
+  <div class="modal-overlay" *ngIf="showDeleteConfirm" (click)="cancelDelete()">
+    <div class="modal modal--small" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h2 class="modal__title">Eliminar niño</h2>
+      </div>
+      <div class="modal__body">
+        <p class="modal__text">
+          ¿Estás seguro de eliminar a <strong>{{ deletingChild?.names }}</strong>?
+        </p>
+        <p class="modal__text modal__text--warn">
+          Esta acción no se puede deshacer.
+        </p>
+      </div>
+      <div class="modal__footer">
+        <button (click)="cancelDelete()" class="modal__btn modal__btn--cancel">Cancelar</button>
+        <button (click)="executeDelete()" class="modal__btn modal__btn--delete">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</ion-content>

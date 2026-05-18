@@ -1,20 +1,183 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content>
+  <nav class="nav">
+    <div class="nav__logo">
+      <span class="nav__icon">🧠</span>
+      <span class="nav__brand">FunnyMind</span>
+    </div>
+    <div class="nav__links">
+      <button type="button" routerLink="/login" class="nav__btn">Ingresar</button>
+    </div>
+  </nav>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <header class="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__content">
+      <div class="hero__text">
+        <h1 class="hero__title">Es hora de <span class="highlight">divertirse</span></h1>
+        <p class="hero__subtitle">Juegos terapéuticos diseñados con amor para niños con TCE</p>
+      <button type="button" routerLink="/register" class="hero__cta">
+          Comenzar ahora
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+      <div class="hero__visual">
+        <div class="floating-shapes">
+          <span class="shape shape--1">🧩</span>
+          <span class="shape shape--2">🎨</span>
+          <span class="shape shape--3">🌟</span>
+          <span class="shape shape--4">💡</span>
+          <span class="shape shape--5">🌈</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero__wave">
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path d="M0,40 C240,120 480,0 720,40 C960,80 1200,0 1440,40 L1440,120 L0,120 Z" fill="var(--bg-warm)"/>
+      </svg>
+    </div>
+  </header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <section class="section about" id="about">
+    <div class="section__inner">
+      <h2 class="section__title">¿Quiénes Somos?</h2>
+      <div class="about__grid">
+        <div class="about__image">
+          <div class="about__illustration">
+            <span>🧸</span>
+          </div>
+        </div>
+        <div class="about__text">
+          <p><strong>FunnyMind</strong> es un proyecto dedicado a crear una plataforma en línea con juegos terapéuticos para niños con Traumatismo Craneoencefálico (TCE).</p>
+          <p>Nuestra misión es ofrecer un entorno digital inclusivo donde cada niño pueda recuperar habilidades cognitivas mientras se divierte. Los juegos están diseñados específicamente para trabajar la función ejecutiva, la memoria, la atención y la velocidad de procesamiento.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tce" id="tce">
+    <div class="section__inner">
+      <h2 class="section__title">¿Qué es el TCE?</h2>
+      <div class="tce__grid">
+        <div class="tce__card">
+          <span class="tce__icon">🧠</span>
+          <h3>¿Qué es?</h3>
+          <p>El Traumatismo Craneoencefálico es una lesión en la cabeza que afecta el cerebro, causada por un golpe, sacudida o impacto.</p>
+        </div>
+        <div class="tce__card">
+          <span class="tce__icon">📋</span>
+          <h3>Efectos</h3>
+          <p>Puede afectar la función cognitiva, emocional y física. La recuperación varía según la severidad de la lesión.</p>
+        </div>
+        <div class="tce__card">
+          <span class="tce__icon">💪</span>
+          <h3>Recuperación</h3>
+          <p>Con el tratamiento adecuado y estimulación constante, muchos niños recuperan habilidades perdidas significativamente.</p>
+        </div>
+      </div>
+      <div class="tce__note">
+        <span class="tce__tag">Leve</span>
+        <span class="tce__tag">Moderado</span>
+        <span class="tce__tag">Grave</span>
+        <span class="tce__tag">No especificado</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section services" id="services">
+    <div class="section__inner">
+      <h2 class="section__title">Nuestros Servicios</h2>
+      <div class="services__grid">
+        <div class="service-card">
+          <div class="service-card__icon" style="background: var(--coral-soft)">
+            <span>🎯</span>
+          </div>
+          <h3 class="service-card__title">Función Ejecutiva</h3>
+          <p class="service-card__text">Juegos de lógica y estrategia como la Torre de Hanoi que estimulan la planificación y resolución de problemas.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-card__icon" style="background: var(--teal-soft)">
+            <span>👁️</span>
+          </div>
+          <h3 class="service-card__title">Memoria y Atención</h3>
+          <p class="service-card__text">Ejercicios de memoria visual y concentración que ayudan a mejorar la retención y el enfoque.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-card__icon" style="background: var(--yellow-soft)">
+            <span>⚡</span>
+          </div>
+          <h3 class="service-card__title">Velocidad de Procesamiento</h3>
+          <p class="service-card__text">Actividades diseñadas para mejorar los reflejos mentales y la rapidez de respuesta.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-card__icon" style="background: var(--purple-soft)">
+            <span>📊</span>
+          </div>
+          <h3 class="service-card__title">Monitoreo de Progreso</h3>
+          <p class="service-card__text">Sistema de seguimiento detallado para médicos y tutores sobre la evolución del paciente.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section team" id="team">
+    <div class="section__inner">
+      <h2 class="section__title">Equipo de Desarrollo</h2>
+      <div class="team__grid">
+        <div class="team-card">
+          <div class="team-card__avatar" style="background: linear-gradient(135deg, #FF6B6B, #ee5a24)">
+            <span>🎨</span>
+          </div>
+          <h4 class="team-card__role">Diseñador de Juegos</h4>
+          <ul class="team-card__skills">
+            <li>Diseño de juegos</li>
+          </ul>
+          <span class="team-card__name">Andrés F. Castellanos V.</span>
+        </div>
+        <div class="team-card">
+          <div class="team-card__avatar" style="background: linear-gradient(135deg, #4ECDC4, #0abde3)">
+            <span>👨‍💻</span>
+          </div>
+          <h4 class="team-card__role">Desarrollador Full-Stack</h4>
+          <ul class="team-card__skills">
+            <li>Base de datos</li>
+            <li>Analista de seguridad</li>
+            <li>Lógica de juegos</li>
+            <li>Frontend</li>
+            <li>Diseño de la plataforma</li>
+            <li>Backend</li>
+          </ul>
+          <span class="team-card__name">Juan F. Delgadillo V.</span>
+        </div>
+        <div class="team-card">
+          <div class="team-card__avatar" style="background: linear-gradient(135deg, #a29bfe, #6c5ce7)">
+            <span>👩‍⚕️</span>
+          </div>
+          <h4 class="team-card__role">Product Owner</h4>
+          <ul class="team-card__skills">
+            <li>Psicóloga</li>
+            <li>Analista de datos</li>
+            <li>Diseño de juegos</li>
+          </ul>
+          <span class="team-card__name">Luz A. Moreno C.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <span>🧠 FunnyMind</span>
+        <p>Con amor para los niños</p>
+      </div>
+      <div class="footer__links">
+        <button type="button" routerLink="/register" class="footer__link">Comenzar</button>
+        <a href="#about">¿Quiénes somos?</a>
+        <a href="#about">¿Qué es TCE?</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>&copy; 2026 FunnyMind. Todos los derechos reservados.</p>
+    </div>
+  </footer>
 </ion-content>

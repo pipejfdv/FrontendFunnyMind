@@ -1,0 +1,9 @@
+{
+  "/mediastack-api": {
+    "target": "https://api.mediastack.com/v1",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": { "^/mediastack-api": "" },
+    "logLevel": "debug"
+  }
+}

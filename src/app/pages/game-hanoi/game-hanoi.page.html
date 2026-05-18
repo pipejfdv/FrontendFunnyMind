@@ -1,0 +1,125 @@
+<ion-content>
+  <div class="hanoi">
+    <!-- HEADER -->
+    <header class="hanoi__header">
+      <a [routerLink]="backRoute" class="hanoi__back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </a>
+      <div class="hanoi__info">
+        <span class="hanoi__child-name" *ngIf="childName">{{ childName }}</span>
+        <span class="hanoi__level">Nivel {{ level }} · {{ state.diskCount }} discos</span>
+      </div>
+      <div class="hanoi__stats">
+        <div class="hanoi__stat">
+          <span class="hanoi__stat-label">Movimientos</span>
+          <span class="hanoi__stat-value">{{ state.moves }}</span>
+        </div>
+        <div class="hanoi__stat">
+          <span class="hanoi__stat-label">Óptimo</span>
+          <span class="hanoi__stat-value hanoi__stat-value--optimal">{{ optimalMoves }}</span>
+        </div>
+      </div>
+      <div class="hanoi__actions">
+        <button (click)="resetLevel()" class="hanoi__btn hanoi__btn--reset" title="Reiniciar nivel">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- GAME AREA -->
+    <div class="hanoi__game">
+      <div class="hanoi__towers">
+        <div *ngFor="let tower of state.towers; let ti = index"
+             class="tower"
+             [class.tower--selected]="state.selectedTower === ti"
+             [class.tower--drag-over]="draggedFrom !== null && draggedFrom !== ti"
+             (click)="selectTower(ti)"
+             (dragover)="onDragOver($event)"
+             (drop)="onDrop($event, ti)">
+
+          <div class="tower__post"></div>
+          <div class="tower__base"></div>
+
+          <div class="tower__disks">
+            <div *ngFor="let disk of disksPerTower[ti]; let di = index"
+                 class="disk"
+                 [class.disk--selected]="state.selectedTower === ti && di === disksPerTower[ti].length - 1"
+                 [style.width.px]="diskWidth(disk)"
+                 [style.background]="diskColor(disk)"
+                 [style.bottom.px]="di * DISK_HEIGHT"
+                 draggable="true"
+                 (dragstart)="onDragStart($event, ti)">
+              <span class="disk__label">{{ disk }}</span>
+            </div>
+          </div>
+
+          <span class="tower__label">Torre {{ ti + 1 }}</span>
+          <button class="tower__btn"
+                  [class.tower__btn--active]="state.selectedTower === ti"
+                  (click)="selectTower(ti); $event.stopPropagation()">
+            {{ state.selectedTower === ti ? 'Soltar' : 'Tomar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSTRUCTIONS OVERLAY -->
+    <div class="hanoi__overlay" *ngIf="showInstructions">
+      <div class="hanoi__modal">
+        <span class="hanoi__modal-icon">🧩</span>
+        <h2 class="hanoi__modal-title">Torre de Hanoi</h2>
+        <div class="hanoi__modal-text">
+          <p>Lleva <strong>todos los discos</strong> de la <strong>Torre 1</strong> a la <strong>Torre 3</strong>.</p>
+          <ul>
+            <li>Solo puedes mover <strong>un disco</strong> a la vez</li>
+            <li>No puedes poner un disco grande sobre uno pequeño</li>
+            <li>Arrastra los discos con el <strong>ratón</strong> o <strong>tócalos</strong> para seleccionarlos</li>
+            <li>También puedes usar los botones debajo de cada torre</li>
+            <li>Hazlo en la <strong>menor cantidad</strong> de movimientos</li>
+          </ul>
+          <p class="hanoi__modal-tip">¡Concéntrate y diviértete! 🎯</p>
+        </div>
+        <button (click)="closeInstructions()" class="hanoi__modal-btn">¡A Jugar!</button>
+      </div>
+    </div>
+
+    <!-- WIN OVERLAY -->
+    <div class="hanoi__overlay" *ngIf="showWin">
+      <div class="hanoi__win">
+        <div class="hanoi__win-confetti">
+          <span *ngFor="let piece of confettiPieces; trackBy: trackByConfettiId"
+                class="confetti-piece"
+                [style.left.%]="piece.x"
+                [style.animation-delay.s]="piece.delay"
+                [style.background]="piece.color">
+          </span>
+        </div>
+        <span class="hanoi__win-icon">🎉</span>
+        <h2 class="hanoi__win-title">¡Felicidades!</h2>
+        <p class="hanoi__win-sub">Completaste el nivel {{ level }}</p>
+        <div class="hanoi__win-stats">
+          <div class="hanoi__win-stat">
+            <span class="hanoi__win-stat-value">{{ state.moves }}</span>
+            <span class="hanoi__win-stat-label">Movimientos</span>
+          </div>
+          <div class="hanoi__win-stat">
+            <span class="hanoi__win-stat-value">{{ optimalMoves }}</span>
+            <span class="hanoi__win-stat-label">Óptimo</span>
+          </div>
+          <div class="hanoi__win-stat">
+            <span class="hanoi__win-stat-value">{{ score }}%</span>
+            <span class="hanoi__win-stat-label">Puntaje</span>
+          </div>
+        </div>
+        <div class="hanoi__win-buttons">
+          <button *ngIf="currentLevelIndex < LEVELS.length - 1" (click)="nextLevel()" class="hanoi__win-btn hanoi__win-btn--primary">
+            Siguiente nivel →
+          </button>
+          <button (click)="restartGame()" class="hanoi__win-btn hanoi__win-btn--secondary">
+            {{ currentLevelIndex >= LEVELS.length - 1 ? 'Jugar de nuevo' : 'Reiniciar juego' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

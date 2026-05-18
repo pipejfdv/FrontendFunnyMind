@@ -1,0 +1,217 @@
+<ion-content>
+  <div class="wizard">
+    <header class="wizard__header">
+      <h1 class="wizard__title">{{ isSimpleRole ? 'Completa tus datos' : 'Completa tu registro' }}</h1>
+      <p class="wizard__sub">{{ isSimpleRole ? 'Solo necesitamos tu información personal' : 'Necesitamos algunos datos para continuar' }}</p>
+
+      <!-- Progress Stepper (solo para PremiumUser/DemoUser) -->
+      <div class="stepper" *ngIf="!isSimpleRole">
+        <div *ngFor="let s of steps; let i = index" class="stepper__item">
+          <div class="stepper__circle"
+               [class.stepper__circle--done]="s.num < step"
+               [class.stepper__circle--active]="s.num === step">
+            <span *ngIf="s.num < step">✓</span>
+            <span *ngIf="s.num >= step">{{ s.num }}</span>
+          </div>
+          <span class="stepper__label">{{ s.label }}</span>
+          <div class="stepper__line" *ngIf="i < steps.length - 1"
+               [class.stepper__line--done]="s.num < step">
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="wizard__content">
+      <!-- Step 1: Guardian (siempre visible) -->
+      <section [class.wizard__step--hidden]="step !== 1" class="wizard__step">
+        <h2 class="wizard__step-title">{{ isSimpleRole ? 'Datos Personales' : 'Datos del Tutor' }}</h2>
+        <p class="wizard__step-desc">Ingresa tu información personal</p>
+
+          <div class="wizard__fields">
+            <div class="wizard__field">
+              <label>Nombre *</label>
+              <input [(ngModel)]="data.guardian.name" type="text" placeholder="Tu nombre"
+                     required #gName="ngModel" />
+              <span class="field-error" *ngIf="gName.invalid && gName.touched">Campo requerido</span>
+            </div>
+            <div class="wizard__field">
+              <label>Apellido *</label>
+              <input [(ngModel)]="data.guardian.lastname" type="text" placeholder="Tu apellido"
+                     required #gLast="ngModel" />
+              <span class="field-error" *ngIf="gLast.invalid && gLast.touched">Campo requerido</span>
+            </div>
+            <div class="wizard__field">
+              <label>Teléfono</label>
+              <input [(ngModel)]="data.guardian.phone" type="tel" placeholder="Número de contacto" />
+            </div>
+            <div class="wizard__field">
+              <label>Biografía</label>
+              <textarea [(ngModel)]="data.guardian.biography" placeholder="Cuéntanos algo sobre ti (opcional)" rows="3"></textarea>
+            </div>
+            <div class="wizard__field">
+              <label>Tipo de documento *</label>
+              <select [(ngModel)]="data.guardian.documentTypeId" required #gDocType="ngModel">
+                <option value="" disabled selected>Selecciona un tipo</option>
+                <option *ngFor="let d of documentTypes" [value]="d.id">{{ d.type }}</option>
+              </select>
+              <span class="field-error" *ngIf="gDocType.invalid && gDocType.touched">Selecciona un tipo de documento</span>
+            </div>
+            <div class="wizard__field">
+              <label>Número de documento *</label>
+              <input [(ngModel)]="data.guardian.document" type="text" placeholder="Número de identificación"
+                     required pattern="[0-9]+" #gDoc="ngModel" />
+              <span class="field-error" *ngIf="gDoc.invalid && gDoc.touched">
+                {{ gDoc.errors?.['required'] ? 'Campo requerido' : 'Solo números' }}
+              </span>
+            </div>
+          </div>
+      </section>
+
+      <!-- Step 2: Relationship (solo PremiumUser/DemoUser) -->
+      <section *ngIf="!isSimpleRole" [class.wizard__step--hidden]="step !== 2" class="wizard__step">
+        <h2 class="wizard__step-title">Relación con el niño</h2>
+        <p class="wizard__step-desc">¿Cuál es tu parentesco?</p>
+
+        <div class="wizard__relationships">
+          <button *ngFor="let r of relationships"
+                  class="rel-option"
+                  [class.rel-option--selected]="data.relationshipId === r.id"
+                  (click)="data.relationshipId = r.id">
+            <span class="rel-option__icon">{{ r.relationship.charAt(0) }}</span>
+            <span class="rel-option__name">{{ r.relationship }}</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 3: Child (solo PremiumUser/DemoUser) -->
+      <section *ngIf="!isSimpleRole" [class.wizard__step--hidden]="step !== 3" class="wizard__step">
+        <h2 class="wizard__step-title">Datos del Niño</h2>
+        <p class="wizard__step-desc">Información del paciente</p>
+
+        <div class="wizard__fields">
+          <div class="wizard__field">
+            <label>Nombres *</label>
+            <input [(ngModel)]="data.child.names" type="text" placeholder="Nombres del niño"
+                   required #cNames="ngModel" />
+            <span class="field-error" *ngIf="cNames.invalid && cNames.touched">Campo requerido</span>
+          </div>
+          <div class="wizard__field">
+            <label>Apellidos *</label>
+            <input [(ngModel)]="data.child.lastName" type="text" placeholder="Apellidos del niño"
+                   required #cLast="ngModel" />
+            <span class="field-error" *ngIf="cLast.invalid && cLast.touched">Campo requerido</span>
+          </div>
+          <div class="wizard__field">
+            <label>Fecha de nacimiento *</label>
+            <input [(ngModel)]="data.child.birthDate" type="date" required #cDate="ngModel" />
+            <span class="field-error" *ngIf="cDate.invalid && cDate.touched">Campo requerido</span>
+          </div>
+          <div class="wizard__field">
+            <label>Tipo de documento *</label>
+            <select [(ngModel)]="data.child.documentTypeId" required #cDocType="ngModel">
+              <option value="" disabled selected>Selecciona un tipo</option>
+              <option *ngFor="let d of documentTypes" [value]="d.id">{{ d.type }}</option>
+            </select>
+            <span class="field-error" *ngIf="cDocType.invalid && cDocType.touched">Selecciona un tipo de documento</span>
+          </div>
+          <div class="wizard__field">
+            <label>Número de documento *</label>
+            <input [(ngModel)]="data.child.document" type="text" placeholder="Número de identificación"
+                   required pattern="[0-9]+" #cDoc="ngModel" />
+            <span class="field-error" *ngIf="cDoc.invalid && cDoc.touched">Solo números</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 4: TCE (solo PremiumUser/DemoUser) -->
+      <section *ngIf="!isSimpleRole" [class.wizard__step--hidden]="step !== 4" class="wizard__step">
+        <h2 class="wizard__step-title">Clasificación del TCE</h2>
+        <p class="wizard__step-desc">Ayúdanos a entender la situación del niño</p>
+
+        <!-- Not using questionnaire -->
+        <div *ngIf="!showQuestionnaire" class="tce-choice">
+          <div class="wizard__field">
+            <label>Clasificación del TCE *</label>
+            <select [(ngModel)]="data.tceClassificationId"
+                    [disabled]="usesQuestionnaire" required #tceSelect="ngModel">
+              <option value="" disabled selected>Selecciona la clasificación</option>
+              <option *ngFor="let t of tceClassifications" [value]="t.id">{{ t.classification }}</option>
+            </select>
+          </div>
+
+          <div class="tce-divider">
+            <span>o</span>
+          </div>
+
+          <p class="tce-choice__help">
+            ¿No sabes la clasificación del TCE del niño?
+          </p>
+          <button (click)="startQuestionnaire()" class="tce-choice__btn">
+            Ayúdame a identificarla
+          </button>
+        </div>
+
+        <!-- Using questionnaire -->
+        <div *ngIf="showQuestionnaire" class="tce-quiz">
+          <button (click)="cancelQuestionnaire()" class="tce-quiz__back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Volver a selección
+          </button>
+
+          <p class="tce-quiz__intro">
+            Responde estas preguntas para estimar la gravedad del Traumatismo Craneoencefálico.
+          </p>
+
+          <div *ngFor="let q of tceQuestions; let qi = index" class="tce-quiz__question">
+            <p class="tce-quiz__q-text">{{ qi + 1 }}. {{ q.question }}</p>
+            <div class="tce-quiz__q-options">
+              <label *ngFor="let o of q.options" class="tce-quiz__q-opt"
+                     [class.tce-quiz__q-opt--selected]="questionnaireAnswers[qi] === o.value">
+                <input type="radio"
+                       [name]="'q' + qi"
+                       [value]="o.value"
+                       (change)="questionnaireAnswers[qi] = o.value"
+                       hidden />
+                <span>{{ o.label }}</span>
+              </label>
+            </div>
+          </div>
+
+          <button (click)="calculateEstimation()" class="tce-quiz__calc"
+                  [disabled]="!allQuestionsAnswered">
+            Calcular clasificación
+          </button>
+
+          <div *ngIf="tceEstimation" class="tce-quiz__result">
+            <span class="tce-quiz__result-icon">📋</span>
+            <strong>Resultado estimado:</strong>
+            <span class="tce-quiz__result-value">{{ tceEstimation }}</span>
+            <p class="tce-quiz__result-note">
+              Esta es una estimación basada en tus respuestas. Consulta con un médico para un diagnóstico preciso.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Navigation -->
+    <div class="wizard__nav">
+      <button (click)="prevStep()" class="wizard__nav-btn wizard__nav-btn--prev"
+              [disabled]="step === 1 || loading">
+        Anterior
+      </button>
+
+      <button *ngIf="step < totalSteps" (click)="nextStep()" class="wizard__nav-btn wizard__nav-btn--next"
+              [disabled]="!canProceed() || loading">
+        Siguiente
+      </button>
+
+      <button *ngIf="step === totalSteps" (click)="finish()" class="wizard__nav-btn wizard__nav-btn--finish"
+              [disabled]="!canProceed() || loading">
+        {{ loading ? 'Guardando...' : isSimpleRole ? 'Guardar' : 'Finalizar' }}
+      </button>
+    </div>
+
+    <p *ngIf="error" class="wizard__error">{{ error }}</p>
+  </div>
+</ion-content>
