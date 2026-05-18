@@ -5,16 +5,15 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
-
-ARG API_URL=http://localhost:8080/pipejfdv/api/v1
-RUN sed -i "s|http://localhost:8080/pipejfdv/api/v1|${API_URL}|g" src/environments/environment.prod.ts
-
 RUN npm run build -- --configuration production
 
 FROM nginx:alpine
+RUN apk add --no-cache gettext
 COPY --from=build /app/www /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/entrypoint.sh"]
