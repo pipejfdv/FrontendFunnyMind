@@ -1,3 +1,9 @@
+/*
+* WizardPage: Registro inicial para nuevos usuarios Premium/Demo.
+* 4 pasos: Tutor -> Relacion -> Nino -> TCE (clasificacion).
+* Para FMAdmin/Medic solo 1 paso (datos del tutor, saltan lo infantil).
+* Al finalizar llama registerFullUser() que crea guardian + child + link.
+*/
 import { Component, inject } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
@@ -25,10 +31,8 @@ export class WizardPage {
   private router = inject(Router);
 
   private readonly roleRoutes: Record<string, string> = {
-    DemoUser: '/child',
-    PremiumUser: '/guardian',
-    Medic: '/medic',
-    FMAdmin: '/admin',
+    DemoUser: '/child', PremiumUser: '/guardian',
+    Medic: '/medic', FMAdmin: '/admin',
   };
 
   step = 1;
@@ -40,7 +44,6 @@ export class WizardPage {
   relationships: Relationship[] = [];
   tceClassifications: TceClassification[] = [];
 
-  // TCE questionnaire
   showQuestionnaire = false;
   usesQuestionnaire = false;
   tceQuestions: TceQuestion[] = TCE_QUESTIONS;
@@ -70,51 +73,36 @@ export class WizardPage {
   }
 
   get steps(): { num: number; label: string }[] {
-    if (this.isSimpleRole) {
-      return [{ num: 1, label: 'Datos' }];
-    }
+    if (this.isSimpleRole) return [{ num: 1, label: 'Datos' }];
     return [
-      { num: 1, label: 'Tutor' },
-      { num: 2, label: 'Relación' },
-      { num: 3, label: 'Niño' },
-      { num: 4, label: 'TCE' },
+      { num: 1, label: 'Tutor' }, { num: 2, label: 'Relacion' },
+      { num: 3, label: 'Nino' }, { num: 4, label: 'TCE' },
     ];
   }
 
   canProceed(): boolean {
     switch (this.step) {
-      case 1:
-        return !!this.data.guardian.name && !!this.data.guardian.lastname
-          && !!this.data.guardian.documentTypeId && !!this.data.guardian.document;
-      case 2:
-        return !!this.data.relationshipId;
-      case 3:
-        return !!this.data.child.names && !!this.data.child.lastName
-          && !!this.data.child.birthDate && !!this.data.child.documentTypeId
-          && !!this.data.child.document;
-      case 4:
-        return this.usesQuestionnaire
-          ? this.tceEstimation !== ''
-          : !!this.data.tceClassificationId;
-      default:
-        return false;
+      case 1: return !!this.data.guardian.name && !!this.data.guardian.lastname
+        && !!this.data.guardian.documentTypeId && !!this.data.guardian.document;
+      case 2: return !!this.data.relationshipId;
+      case 3: return !!this.data.child.names && !!this.data.child.lastName
+        && !!this.data.child.birthDate && !!this.data.child.documentTypeId && !!this.data.child.document;
+      case 4: return this.usesQuestionnaire
+        ? this.tceEstimation !== ''
+        : !!this.data.tceClassificationId;
+      default: return false;
     }
   }
 
   nextStep(): void {
     if (!this.canProceed()) return;
-    if (this.step < this.totalSteps) {
-      this.step++;
-    }
+    if (this.step < this.totalSteps) this.step++;
   }
 
   prevStep(): void {
-    if (this.step > 1) {
-      this.step--;
-    }
+    if (this.step > 1) this.step--;
   }
 
-  // TCE questionnaire handling
   startQuestionnaire(): void {
     this.showQuestionnaire = true;
     this.usesQuestionnaire = true;
@@ -131,9 +119,7 @@ export class WizardPage {
     if (!this.allQuestionsAnswered) return;
     const estimation = calculateTceEstimation(this.questionnaireAnswers);
     this.tceEstimation = estimation;
-    const match = this.tceClassifications.find(
-      t => t.classification === estimation,
-    );
+    const match = this.tceClassifications.find(t => t.classification === estimation);
     this.data.tceClassificationId = match?.id || null;
     this.data.questionnaireAnswers = [...this.questionnaireAnswers];
     this.data.usesQuestionnaire = true;
@@ -145,14 +131,9 @@ export class WizardPage {
     if (!user) return;
 
     if (this.usesQuestionnaire && this.tceEstimation) {
-      const match = this.tceClassifications.find(
-        t => t.classification === this.tceEstimation,
-      );
-      if (match) {
-        this.data.tceClassificationId = match.id;
-      } else {
-        this.data.tceClassificationId = this.tceClassifications[3]?.id || '';
-      }
+      const match = this.tceClassifications.find(t => t.classification === this.tceEstimation);
+      if (match) this.data.tceClassificationId = match.id;
+      else this.data.tceClassificationId = this.tceClassifications[3]?.id || '';
     }
 
     this.loading = true;
@@ -161,8 +142,7 @@ export class WizardPage {
     this.reg.completeRegistration(user.id, this.userRole).subscribe({
       next: () => {
         this.loading = false;
-        const route = this.roleRoutes[this.userRole] || '/guardian';
-        this.router.navigate([route]);
+        this.router.navigate([this.roleRoutes[this.userRole] || '/guardian']);
       },
       error: (err) => {
         this.loading = false;

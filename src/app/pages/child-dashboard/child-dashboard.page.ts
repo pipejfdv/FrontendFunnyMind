@@ -1,3 +1,9 @@
+/*
+* ChildDashboardPage: Pagina de seleccion de juegos para el nino.
+* Cuando un guardian selecciona un perfil infantil, se navega aqui con ?childId=.
+* Muestra los juegos agrupados por categoria (Funcion Ejecutiva, Memoria, Velocidad).
+* El nombre del nino se muestra en el saludo ("!Hola, Carlitos!").
+*/
 import { Component, inject } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
 import { RouterLink, ActivatedRoute } from '@angular/router';
@@ -24,8 +30,8 @@ export class ChildDashboardPage {
   isPremiumFlow = false;
 
   readonly catEmojis: Record<string, string> = {
-    'FUNCIÓN EJECUTIVA': '🧠',
-    'MEMORIA Y ATENCIÓN': '👁️',
+    'FUNCION EJECUTIVA': '🧠',
+    'MEMORIA Y ATENCION': '👁️',
     'VELOCIDAD DE PROCESAMIENTO': '⚡',
   };
 
@@ -33,6 +39,7 @@ export class ChildDashboardPage {
     this.categories = this.gamesService.categories();
     this.games = this.gamesService.games();
 
+    // Si viene con ?childId= es flujo Premium (guardian eligio un nino)
     this.route.queryParams.subscribe(params => {
       const childId = params['childId'];
       if (childId) {

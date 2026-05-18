@@ -1,3 +1,20 @@
+/*
+* extractError: Extrae mensajes de error del backend para mostrarlos al usuario.
+*
+* El backend retorna errores en formato:
+*   { "errorMessage": "descripcion", "status": 409 }
+*   { "message": "descripcion", "status": 400 }
+*
+* Si no hay mensaje del backend, genera uno segun el codigo HTTP:
+*   409 -> "El registro ya existe."
+*   403 -> "No tienes permisos para esta accion."
+*   404 -> "Recurso no encontrado."
+*   0   -> "Error de conexion con el servidor."
+*
+* @Params err unknown error de la peticion HTTP (HttpErrorResponse)
+* @Params fallback String mensaje generico por defecto
+* @Return String mensaje de error descriptivo
+*/
 import { HttpErrorResponse } from '@angular/common/http';
 
 export function extractError(err: unknown, fallback: string): string {

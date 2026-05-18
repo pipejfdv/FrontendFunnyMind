@@ -1,3 +1,9 @@
+/*
+* EditGuardianPage: Editar datos del tutor y administrar hijos.
+* Secciones: datos personales (editable), lista de hijos con editar/eliminar.
+* Modal de edicion permite cambiar nombres del nino y nombre del perfil.
+* Al guardar, actualiza via PUT /children/update y PUT /profiles/update.
+*/
 import { Component, inject } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
@@ -41,6 +47,7 @@ export class EditGuardianPage {
     this.loadData();
   }
 
+  // Carga datos del guardian + perfiles + hijos
   private loadData(): void {
     this.loading = true;
     this.api.getMyGuardianInfo().subscribe({
@@ -60,6 +67,7 @@ export class EditGuardianPage {
     });
   }
 
+  // Carga perfiles (nombres alternativos) de los hijos
   private loadProfiles(): void {
     this.api.getProfiles(this.guardianId).subscribe({
       next: (profiles: any[]) => {
@@ -105,10 +113,7 @@ export class EditGuardianPage {
       phone: this.phone,
       biography: this.biography,
     }).subscribe({
-      next: () => {
-        this.saved = true;
-        setTimeout(() => this.saved = false, 3000);
-      },
+      next: () => { this.saved = true; setTimeout(() => this.saved = false, 3000); },
     });
   }
 
@@ -171,10 +176,7 @@ export class EditGuardianPage {
   executeDelete(): void {
     if (!this.deletingChild) return;
     this.api.deleteChild(this.deletingChild.id).subscribe({
-      next: () => {
-        this.cancelDelete();
-        this.loadData();
-      },
+      next: () => { this.cancelDelete(); this.loadData(); },
     });
   }
 }

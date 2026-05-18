@@ -1,3 +1,9 @@
+/*
+* ChildStatsPage: Estadisticas de progreso por nino (vista guardian).
+* Carga las categorias desde MCSJuegos y para cada nino + categoria
+* consulta el progreso via GET /games/progress/{childId}/{catId}.
+* Muestra barras de XP, nivel alcanzado e intentos del dia.
+*/
 import { Component, inject } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
 import { NgFor, NgIf } from '@angular/common';
@@ -29,6 +35,7 @@ export class ChildStatsPage {
   loading = true;
 
   constructor() {
+    // Carga categorias desde MCSJuegos o usa las del GamesService
     this.api.getCategoriesList().subscribe(cats => {
       this.categories = cats && cats.length > 0 ? cats : this.gamesService.categories();
       this.loadChildren();
@@ -48,9 +55,7 @@ export class ChildStatsPage {
             age: c.age,
             tceClassification: { id: '', classification: c.tceClassification || 'No especificado' },
           } as Child));
-          if (this.children.length > 0) {
-            this.selectChild(this.children[0]);
-          }
+          if (this.children.length > 0) this.selectChild(this.children[0]);
         }
         this.loading = false;
       },
@@ -63,6 +68,7 @@ export class ChildStatsPage {
     this.loadProgress(child.id);
   }
 
+  // Carga progreso para cada categoria del nino seleccionado
   private loadProgress(childId: string): void {
     const progressList: ChildProgress[] = [];
     let loaded = 0;
@@ -79,15 +85,11 @@ export class ChildStatsPage {
             });
           }
           loaded++;
-          if (loaded >= this.categories.length) {
-            this.progress = [...progressList];
-          }
+          if (loaded >= this.categories.length) this.progress = [...progressList];
         },
         error: () => {
           loaded++;
-          if (loaded >= this.categories.length) {
-            this.progress = [...progressList];
-          }
+          if (loaded >= this.categories.length) this.progress = [...progressList];
         },
       });
     }

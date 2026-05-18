@@ -149,7 +149,8 @@
           <div *ngFor="let p of patients" class="admin-list__item">
             <div class="admin-list__info">
               <strong>{{ p.names }} {{ p.lastName }}</strong>
-              <span>{{ calculateAge(p.birthDate) }} años · {{ p.tceClassification.classification }}</span>
+              <span>{{ p.age || calculateAge(p.birthDate) }} años · TCE: {{ p.tceClassification.classification }}</span>
+              <span *ngIf="p.documentType" class="admin-list__meta">{{ p.documentType }}{{ p.document ? ': ' + p.document : '' }}</span>
             </div>
             <button (click)="openPatient(p)" class="admin-list__view">Ver progreso</button>
           </div>
@@ -247,7 +248,7 @@
             <div class="report-bar__track">
               <div class="report-bar__fill" [style.width.%]="Math.min(100, (c.xp / 500) * 100)" [style.background]="c.name === 'FUNCIÓN EJECUTIVA' ? '#FF6B6B' : c.name === 'MEMORIA Y ATENCIÓN' ? '#4ECDC4' : '#FFE66D'"></div>
             </div>
-            <span class="report-bar__count">{{ c.xp }} XP</span>
+            <span class="report-bar__count">{{ Math.round(c.xp) }} XP</span>
           </div>
         </div>
         <div class="report-section">
@@ -258,9 +259,9 @@
               <strong>{{ i.childName }}</strong>
               <div class="report-individual__bar">
                 <div class="report-individual__track">
-                  <div class="report-individual__fill" [style.width.%]="Math.min(100, (i.xp / 1000) * 100)" [style.background]="i.color"></div>
+                  <div class="report-individual__fill" [style.width.%]="Math.min(100, (Math.round(i.xp) / 1000) * 100)" [style.background]="i.color"></div>
                 </div>
-                <span>{{ i.xp }} XP</span>
+                <span>{{ Math.round(i.xp) }} XP</span>
               </div>
             </div>
             <span class="report-individual__level" [style.background]="i.color">{{ i.level }}</span>
@@ -298,6 +299,14 @@
               <label>Usuario</label>
               <input [(ngModel)]="editUsername" placeholder="Nombre de usuario" />
             </div>
+            <div class="admin-form__field" *ngIf="selectedUser.documentType">
+              <label>Tipo documento</label>
+              <p class="admin-form__static">{{ selectedUser.documentType }}</p>
+            </div>
+            <div class="admin-form__field" *ngIf="selectedUser.document">
+              <label>Numero documento</label>
+              <p class="admin-form__static">{{ selectedUser.document }}</p>
+            </div>
           </div>
         </div>
         <div class="modal__footer modal__footer--user">
@@ -325,6 +334,7 @@
             <div>
               <strong class="patient-info__name">{{ selectedPatient.names }} {{ selectedPatient.lastName }}</strong>
               <p class="patient-info__meta">{{ calculateAge(selectedPatient.birthDate) }} años · {{ selectedPatient.tceClassification.classification }}</p>
+              <p class="patient-info__meta" *ngIf="selectedPatient.documentType">Doc: {{ selectedPatient.documentType }}{{ selectedPatient.document ? ' · ' + selectedPatient.document : '' }}</p>
             </div>
           </div>
           <div class="patient-stats" *ngIf="selectedPatient.stats.length">

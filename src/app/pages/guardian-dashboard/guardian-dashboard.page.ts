@@ -1,3 +1,9 @@
+/*
+* GuardianDashboardPage: Pagina principal del tutor (PremiumUser).
+* Muestra perfiles infantiles estilo Netflix para seleccionar un nino.
+* Incluye modal de 3 pasos para agregar un nuevo nino (relacion, datos, TCE).
+* Al hacer clic en un perfil, navega a /child?childId= para jugar.
+*/
 import { Component, inject } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
 import { RouterLink, Router } from '@angular/router';
@@ -28,6 +34,7 @@ export class GuardianDashboardPage {
   tceClassifications: any[] = [];
   guardianId = '';
 
+  // Estado del modal de agregar nino (3 pasos)
   showModal = false;
   step = 1;
   relationshipId = '';
@@ -40,6 +47,7 @@ export class GuardianDashboardPage {
   error = '';
   submitting = false;
 
+  // Cuestionario opcional de estimacion TCE
   showQuestionnaire = false;
   tceQuestions: TceQuestion[] = TCE_QUESTIONS;
   questionnaireAnswers: number[] = [];
@@ -60,12 +68,11 @@ export class GuardianDashboardPage {
           this.loadChildren();
         }
       },
-      error: () => {
-        this.loadChildren();
-      },
+      error: () => { this.loadChildren(); },
     });
   }
 
+  // Carga los hijos del guardian desde GET /children/public/list
   private loadChildren(): void {
     this.api.getChildrenByGuardian().subscribe({
       next: (list: any[]) => {

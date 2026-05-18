@@ -1,3 +1,9 @@
+/*
+* LoginPage: Formulario de inicio de sesion.
+* Envia credenciales al backend via AuthService.login().
+* Si exito, navega al dashboard segun el rol (navigateByRole).
+* Si falla, muestra mensaje de error (usuario/contra incorrectos o error de conexion).
+*/
 import { Component, inject } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
@@ -24,17 +30,17 @@ export class LoginPage {
   login(): void {
     this.error = '';
     if (!this.username || !this.password) {
-      this.error = 'Ingresa tu usuario y contraseña';
+      this.error = 'Ingresa tu usuario y contrasena';
       return;
     }
-    this.loading.show('Iniciando sesión...');
+    this.loading.show('Iniciando sesion...');
     this.auth.login(this.username, this.password).subscribe({
       next: (success) => {
         this.loading.hide();
         if (success) {
           this.auth.navigateByRole();
         } else {
-          this.error = 'Usuario o contraseña incorrectos';
+          this.error = 'Usuario o contrasena incorrectos';
         }
       },
       error: (err) => {

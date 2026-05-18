@@ -127,13 +127,6 @@ export class AdminDashboardPage {
     this.api.getUsers().subscribe(u => this.users = u);
   }
 
-  openUser(user: User): void {
-    this.selectedUser = { ...user };
-    this.editUsername = user.username;
-    this.editName = user.name;
-    this.showUserModal = true;
-  }
-
   closeUser(): void { this.showUserModal = false; this.selectedUser = null; }
 
   saveUser(): void {
@@ -189,6 +182,21 @@ export class AdminDashboardPage {
     }
   }
 
+  openUser(user: User): void {
+    this.selectedUser = { ...user };
+    this.editUsername = user.username;
+    this.editName = user.name || user.username;
+    // Load guardian admin info for document data
+    this.api.getGuardianAdminInfo(user.id).subscribe({
+      next: (g: any) => {
+        if (g && g.id) {
+          this.selectedUser = { ...this.selectedUser!, documentType: g.documentType, document: g.document };
+        }
+      },
+    });
+    this.showUserModal = true;
+  }
+
   closePatient(): void { this.showPatientModal = false; this.selectedPatient = null; }
 
   addDocType(): void {
@@ -231,56 +239,62 @@ export class AdminDashboardPage {
 
   private loadReports(): void {
     this.api.getAllChildren().subscribe(children => {
-      const byLevel: { level: string; count: number }[] = [
-        { level: 'Inicial', count: 0 },
-        { level: 'Basico', count: 0 },
-        { level: 'Intermedio', count: 0 },
-        { level: 'Avanzado', count: 0 },
-        { level: 'Experto', count: 0 },
-      ];
+      const levelOrder = ['Inicial', 'Basico', 'Intermedio', 'Avanzado', 'Experto'];
+      const levelColors: Record<string, string> = {
+        Inicial: '#FF6B6B', Basico: '#FFB347', Intermedio: '#4ECDC4',
+        Avanzado: '#45B7D1', Experto: '#A29BFE',
+      };
+      const byLevel: { level: string; count: number }[] = levelOrder.map(l => ({ level: l, count: 0 }));
       const byCategory: { name: string; xp: number }[] = this.categories.map(c => ({ name: c.name, xp: 0 }));
-      const individual: { childName: string; xp: number; level: string; color: string }[] = [];
-      let loaded = 0;
+      const childData: { childName: string; xp: number; level: string; xpByCat: number[] }[] =
+        children.map(c => ({ childName: c.names, xp: 0, level: 'Inicial', xpByCat: new Array(this.categories.length).fill(0) }));
+      let totalRequests = children.length * this.categories.length;
+      let completed = 0;
 
-      if (children.length === 0 || this.categories.length === 0) {
-        this.reports = { totalChildren: 0, totalPlayTimeHours: 0, avgScore: 0, byLevel, byCategory, individual };
+      if (totalRequests === 0) {
+        this.reports = { totalChildren: 0, totalPlayTimeHours: 0, avgScore: 0, byLevel, byCategory, individual: [] };
         return;
       }
 
-      for (const child of children) {
-        let totalXp = 0;
-        let topLevel = 'Inicial';
-        const levelOrder = ['Inicial', 'Basico', 'Intermedio', 'Avanzado', 'Experto'];
-        const childCategories: { name: string; xp: number }[] = [];
+      for (let ci = 0; ci < children.length; ci++) {
+        for (let cj = 0; cj < this.categories.length; cj++) {
+          const childIdx = ci;
+          const catIdx = cj;
+          const childId = children[ci].id;
+          const catId = this.categories[cj].id;
 
-        for (const cat of this.categories) {
-          this.api.getGameProgress(child.id, cat.id).subscribe({
+          this.api.getGameProgress(childId, catId).subscribe({
             next: (p: any) => {
               if (p && p.xp !== undefined) {
-                totalXp += p.xp;
-                const catIdx = byCategory.findIndex(bc => bc.name === cat.name);
-                if (catIdx >= 0) byCategory[catIdx].xp += p.xp;
-
-                const levelIdx = levelOrder.indexOf(p.level);
-                if (levelIdx > levelOrder.indexOf(topLevel)) topLevel = p.level;
+                const xp = Math.round(p.xp);
+                childData[childIdx].xp += xp;
+                childData[childIdx].xpByCat[catIdx] = xp;
+                const lvlIdx = levelOrder.indexOf(p.level);
+                if (lvlIdx > levelOrder.indexOf(childData[childIdx].level)) {
+                  childData[childIdx].level = p.level;
+                }
               }
             },
             error: () => {},
           }).add(() => {
-            loaded++;
-            if (loaded >= children.length * this.categories.length) {
-              const levelColors: Record<string, string> = {
-                Inicial: '#FF6B6B', Basico: '#FFB347', Intermedio: '#4ECDC4',
-                Avanzado: '#45B7D1', Experto: '#A29BFE',
-              };
-              for (const c of children) {
-                individual.push({
-                  childName: c.names,
-                  xp: 0,
-                  level: 'Inicial',
-                  color: '#FF6B6B',
+            completed++;
+            if (completed >= totalRequests) {
+              for (const cd of childData) {
+                byLevel.forEach(b => {
+                  if (b.level === cd.level) b.count++;
                 });
               }
+              for (let gi = 0; gi < childData.length; gi++) {
+                for (let gj = 0; gj < this.categories.length; gj++) {
+                  byCategory[gj].xp += childData[gi].xpByCat[gj];
+                }
+              }
+              const individual = childData.map(cd => ({
+                childName: cd.childName,
+                xp: cd.xp,
+                level: cd.level,
+                color: levelColors[cd.level] || '#FF6B6B',
+              }));
               this.reports = {
                 totalChildren: children.length,
                 totalPlayTimeHours: 0,

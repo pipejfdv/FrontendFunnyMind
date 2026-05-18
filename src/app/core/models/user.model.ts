@@ -5,6 +5,8 @@ export interface User {
   username: string;
   name: string;
   role: UserRole;
+  documentType?: string;
+  document?: string;
 }
 
 export interface AuthResponse {
@@ -25,6 +27,8 @@ export interface Child {
   birthDate: string;
   age?: number;
   tceClassification: TceClassification;
+  documentType?: string;
+  document?: number;
   avatar?: string;
   profileId?: string;
   profileName?: string;

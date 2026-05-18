@@ -39,7 +39,7 @@
                    [style.background]="getLevelColor(prog.level)">
               </div>
             </div>
-            <span class="stat-card__xp">{{ prog.xp }} / {{ getNextLevelXp(prog.level) }} XP</span>
+            <span class="stat-card__xp">{{ Math.round(prog.xp) }} / {{ getNextLevelXp(prog.level) }} XP</span>
           </div>
           <div class="stat-card__bottom">
             <span class="stat-card__level" [style.background]="getLevelColor(prog.level)">{{ prog.level }}</span>

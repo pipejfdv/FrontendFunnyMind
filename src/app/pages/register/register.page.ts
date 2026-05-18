@@ -1,3 +1,9 @@
+/*
+* RegisterPage: Creacion de nueva cuenta.
+* Paso 1: Seleccionar plan (Demo gratuito o Premium completo).
+* Paso 2: Llenar formulario con usuario, email, contrasena.
+* Al enviar, llama POST /User/create/{membership} y redirige al login.
+*/
 import { Component, inject } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
@@ -13,15 +19,8 @@ const MEMBERSHIPS: MembershipPlan[] = [
     type: 'DemoUser',
     name: 'Demo',
     price: 'Gratis',
-    features: [
-      'Explora todos los juegos',
-      'Acceso ilimitado a categorías',
-    ],
-    limitations: [
-      '3 horas diarias de juego',
-      'Publicidad (simulada)',
-      'Sin registro de progreso',
-    ],
+    features: ['Explora todos los juegos', 'Acceso ilimitado a categorias'],
+    limitations: ['3 horas diarias de juego', 'Publicidad (simulada)', 'Sin registro de progreso'],
     color: '#4ECDC4',
   },
   {
@@ -29,13 +28,9 @@ const MEMBERSHIPS: MembershipPlan[] = [
     name: 'Premium',
     price: 'Completa',
     features: [
-      'Todo lo de la versión Demo',
-      'Sin límite de tiempo',
-      'Sin publicidad',
-      'Historial completo del niño',
-      'Estadísticas de progreso',
-      'Asesoría médica profesional',
-      'Múltiples perfiles de niños',
+      'Todo lo de la version Demo', 'Sin limite de tiempo', 'Sin publicidad',
+      'Historial completo del nino', 'Estadisticas de progreso',
+      'Asesoria medica profesional', 'Multiples perfiles de ninos',
     ],
     limitations: [],
     color: '#FF6B6B',
@@ -75,25 +70,12 @@ export class RegisterPage {
   register(): void {
     this.error = '';
     if (!this.username || !this.email || !this.password || !this.confirmPassword) {
-      this.error = 'Completa todos los campos';
-      return;
+      this.error = 'Completa todos los campos'; return;
     }
-    if (!this.email.includes('@')) {
-      this.error = 'Ingresa un correo válido';
-      return;
-    }
-    if (this.password !== this.confirmPassword) {
-      this.error = 'Las contraseñas no coinciden';
-      return;
-    }
-    if (this.password.length < 4) {
-      this.error = 'La contraseña debe tener al menos 4 caracteres';
-      return;
-    }
-    if (!this.selectedMembership) {
-      this.error = 'Selecciona una membresía';
-      return;
-    }
+    if (!this.email.includes('@')) { this.error = 'Ingresa un correo valido'; return; }
+    if (this.password !== this.confirmPassword) { this.error = 'Las contrasenas no coinciden'; return; }
+    if (this.password.length < 4) { this.error = 'La contrasena debe tener al menos 4 caracteres'; return; }
+    if (!this.selectedMembership) { this.error = 'Selecciona una membresia'; return; }
 
     this.loading = true;
     this.loadingSvc.show('Creando tu cuenta...');

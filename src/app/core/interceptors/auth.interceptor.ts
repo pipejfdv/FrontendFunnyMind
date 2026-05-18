@@ -1,3 +1,13 @@
+/*
+* authInterceptor: Interceptor HTTP que anade headers a TODAS las peticiones salientes.
+*
+* Headers incluidos:
+*   Authorization: Bearer <token>  (token JWT desde localStorage)
+*   Accept: application/json       (fuerza respuesta JSON)
+*   ngrok-skip-browser-warning: true (evita pagina de advertencia de ngrok)
+*
+* En caso de respuesta 401 (no autorizado), limpia la sesion y redirige al login.
+*/
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
