@@ -82,6 +82,16 @@
   border-color: var(--coral);
   box-shadow: 0 0 0 4px var(--coral-soft);
 }
+.login__forgot {
+  align-self: flex-end;
+  margin-top: -0.45rem;
+  color: #8b9198;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.login__forgot:hover { color: var(--coral); }
 .login__error {
   color: var(--coral);
   font-size: 0.85rem;

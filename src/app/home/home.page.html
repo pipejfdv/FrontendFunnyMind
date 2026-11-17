@@ -1,183 +1,419 @@
-<ion-content>
-  <nav class="nav">
-    <div class="nav__logo">
-      <span class="nav__icon">🧠</span>
-      <span class="nav__brand">FunnyMind</span>
-    </div>
-    <div class="nav__links">
-      <button type="button" routerLink="/login" class="nav__btn">Ingresar</button>
-    </div>
-  </nav>
+<ion-content [fullscreen]="true">
+  <div class="landing">
+    <nav class="topbar">
+      <a class="brand" routerLink="/" aria-label="FunnyMind inicio">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <circle cx="16" cy="16" r="5.2" fill="currentColor" stroke="none"/>
+            <circle cx="16" cy="4.8" r="2.2"/>
+            <circle cx="26.4" cy="16" r="2.2"/>
+            <circle cx="16" cy="27.2" r="2.2"/>
+            <circle cx="5.6" cy="16" r="2.2"/>
+            <path d="M16 7v3.6M21.2 12.2l2-2M21.2 19.8l2 2M16 21.4V25M10.8 19.8l-2 2M10.8 12.2l-2-2"/>
+          </svg>
+        </span>
+        <span class="brand__name">FunnyMind</span>
+      </a>
 
-  <header class="hero">
-    <div class="hero__bg"></div>
-    <div class="hero__content">
-      <div class="hero__text">
-        <h1 class="hero__title">Es hora de <span class="highlight">divertirse</span></h1>
-        <p class="hero__subtitle">Juegos terapéuticos diseñados con amor para niños con TCE</p>
-      <button type="button" routerLink="/register" class="hero__cta">
-          Comenzar ahora
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
+      <div class="topbar__links">
+        <button type="button" (click)="scrollTo('juegos')">Juegos</button>
+        <button type="button" (click)="scrollTo('como-funciona')">Cómo funciona</button>
+        <button type="button" (click)="scrollTo('tce')">TCE</button>
+        <button type="button" (click)="scrollTo('equipo')">Equipo</button>
       </div>
-      <div class="hero__visual">
-        <div class="floating-shapes">
-          <span class="shape shape--1">🧩</span>
-          <span class="shape shape--2">🎨</span>
-          <span class="shape shape--3">🌟</span>
-          <span class="shape shape--4">💡</span>
-          <span class="shape shape--5">🌈</span>
-        </div>
-      </div>
-    </div>
-    <div class="hero__wave">
-      <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
-        <path d="M0,40 C240,120 480,0 720,40 C960,80 1200,0 1440,40 L1440,120 L0,120 Z" fill="var(--bg-warm)"/>
-      </svg>
-    </div>
-  </header>
 
-  <section class="section about" id="about">
-    <div class="section__inner">
-      <h2 class="section__title">¿Quiénes Somos?</h2>
-      <div class="about__grid">
-        <div class="about__image">
-          <div class="about__illustration">
-            <span>🧸</span>
+      <div class="topbar__actions">
+        <button type="button" routerLink="/login" class="btn btn--quiet">Ingresar</button>
+        <button type="button" routerLink="/register" class="btn btn--primary">Crear cuenta</button>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero__grid">
+        <div class="hero__copy">
+          <p class="eyebrow"><span class="eyebrow__dot"></span> Rehabilitación cognitiva infantil</p>
+          <h1 class="hero__title">
+            Jugar también es
+            <span class="hero__accent">rehabilitar.</span>
+          </h1>
+          <p class="hero__lede">
+            Juegos terapéuticos para niños con TCE. Entrenan función ejecutiva, memoria, atención y velocidad de procesamiento mientras el niño solo siente que está jugando.
+          </p>
+          <div class="hero__actions">
+            <button type="button" routerLink="/register" class="btn btn--primary btn--lg">
+              Comenzar gratis
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+            <button type="button" class="btn btn--text" (click)="scrollTo('juegos')">
+              Ver los juegos
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+            </button>
+          </div>
+          <div class="hero__facts">
+            <div><strong>3</strong><span>juegos clínicos</span></div>
+            <div><strong>4</strong><span>áreas cognitivas</span></div>
+            <div><strong>1:1</strong><span>progreso por niño</span></div>
           </div>
         </div>
-        <div class="about__text">
-          <p><strong>FunnyMind</strong> es un proyecto dedicado a crear una plataforma en línea con juegos terapéuticos para niños con Traumatismo Craneoencefálico (TCE).</p>
-          <p>Nuestra misión es ofrecer un entorno digital inclusivo donde cada niño pueda recuperar habilidades cognitivas mientras se divierte. Los juegos están diseñados específicamente para trabajar la función ejecutiva, la memoria, la atención y la velocidad de procesamiento.</p>
+
+        <div class="hero__stage">
+          <div class="stage-chip stage-chip--session">
+            <span class="stage-chip__pulse"></span>
+            Sesión de hoy
+            <strong>12 min</strong>
+          </div>
+
+          <div class="game-window">
+            <div class="game-window__bar">
+              <span class="game-window__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="game-window__title">Los Pares · Nivel 3</span>
+              <span class="game-window__xp">+120 XP</span>
+            </div>
+            <div class="game-window__body">
+              <div class="game-window__meta">
+                <span class="chip">Memoria y atención</span>
+                <span class="game-window__time">02:14</span>
+              </div>
+
+              <div class="memory-board">
+                <button
+                  *ngFor="let card of cards"
+                  type="button"
+                  class="memory-card"
+                  [class.is-flipped]="card.flipped"
+                  (click)="flip(card)"
+                  [attr.aria-label]="card.flipped ? 'Carta descubierta' : 'Descubrir carta'"
+                >
+                  <span class="memory-card__inner">
+                    <span class="memory-card__face memory-card__back">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>
+                    </span>
+                    <span class="memory-card__face memory-card__front">
+                      <img [src]="card.image" alt="" loading="lazy">
+                    </span>
+                  </span>
+                </button>
+              </div>
+
+              <div class="game-window__progress">
+                <div class="progress-label">
+                  <span>Pares encontrados</span>
+                  <strong>3 / 6</strong>
+                </div>
+                <div class="progress-track"><span></span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage-chip stage-chip--saved">
+            <span class="stage-chip__dot"></span>
+            Progreso guardado
+          </div>
+
+          <p class="stage-note">Cada partida deja datos útiles para tutores y clínicos.</p>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section class="section tce" id="tce">
-    <div class="section__inner">
-      <h2 class="section__title">¿Qué es el TCE?</h2>
-      <div class="tce__grid">
-        <div class="tce__card">
-          <span class="tce__icon">🧠</span>
+      <div class="hero__scroll" aria-hidden="true">
+        <span>Desliza para conocer</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </div>
+    </header>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Función ejecutiva</span><i></i>
+        <span>Memoria</span><i></i>
+        <span>Atención sostenida</span><i></i>
+        <span>Velocidad de procesamiento</span><i></i>
+        <span>Progreso clínico</span><i></i>
+        <span>Función ejecutiva</span><i></i>
+        <span>Memoria</span><i></i>
+        <span>Atención sostenida</span><i></i>
+        <span>Velocidad de procesamiento</span><i></i>
+        <span>Progreso clínico</span><i></i>
+      </div>
+    </div>
+
+    <section class="section areas" id="juegos">
+      <div class="section__head">
+        <p class="eyebrow eyebrow--light">Lo que entrenamos</p>
+        <h2>Tres juegos.<br>Cuatro habilidades.<br><span class="serif">Un avance visible.</span></h2>
+        <p class="section__lede">
+          Cada juego tiene un objetivo cognitivo claro. La dificultad sube contigo, no contra ti.
+        </p>
+      </div>
+
+      <div class="areas__list">
+        <article class="area-row">
+          <span class="area-row__num">01</span>
+          <div class="area-row__main">
+            <div class="area-row__heading">
+              <span class="area-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17h16M7 17v-5M12 17V8M17 17v-8"/><path d="M4 20h16"/></svg>
+              </span>
+              <h3>Función ejecutiva</h3>
+            </div>
+            <p>Torre de Hanoi: planificación, secuencia y resolución de problemas paso a paso.</p>
+          </div>
+          <div class="area-row__tags"><span>Planificación</span><span>Lógica</span></div>
+          <div class="area-row__visual area-row__visual--tower" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </article>
+
+        <article class="area-row">
+          <span class="area-row__num">02</span>
+          <div class="area-row__main">
+            <div class="area-row__heading">
+              <span class="area-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+              </span>
+              <h3>Memoria y atención</h3>
+            </div>
+            <p>Los Pares: memoria visual, concentración y retención de patrones.</p>
+          </div>
+          <div class="area-row__tags"><span>Memoria</span><span>Enfoque</span></div>
+          <div class="area-row__visual area-row__visual--memory" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </article>
+
+        <article class="area-row">
+          <span class="area-row__num">03</span>
+          <div class="area-row__main">
+            <div class="area-row__heading">
+              <span class="area-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M22 12h-3M12 22v-3M2 12h3"/></svg>
+              </span>
+              <h3>Velocidad de procesamiento</h3>
+            </div>
+            <p>Tiro al Blanco: reflejos mentales, precisión y rapidez de respuesta.</p>
+          </div>
+          <div class="area-row__tags"><span>Reflejos</span><span>Precisión</span></div>
+          <div class="area-row__visual area-row__visual--target" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section how" id="como-funciona">
+      <div class="section__head section__head--split">
+        <div>
+          <p class="eyebrow">Cómo funciona</p>
+          <h2>Tres pasos.<br><span class="serif">Cero complicación.</span></h2>
+        </div>
+        <p class="section__lede">
+          La tecnología se aparta del camino. Lo importante es que el niño juegue, avance y se sienta acompañado.
+        </p>
+      </div>
+
+      <div class="how__grid">
+        <article class="step">
+          <span class="step__num">01</span>
+          <h3>Crea la cuenta</h3>
+          <p>Elige el plan Demo o Premium y registra al tutor en menos de un minuto.</p>
+        </article>
+        <article class="step">
+          <span class="step__num">02</span>
+          <h3>Completa el perfil</h3>
+          <p>Agrega los datos del niño, su relación contigo y la clasificación TCE indicada.</p>
+        </article>
+        <article class="step">
+          <span class="step__num">03</span>
+          <h3>Empieza a jugar</h3>
+          <p>Cada sesión guarda XP, precisión y progreso para que tutores y clínicos vean el avance.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section progress" id="progreso">
+      <div class="progress__copy">
+        <p class="eyebrow">Para tutores y clínicos</p>
+        <h2>El juego avanza.<br><span class="serif">El progreso queda.</span></h2>
+        <p class="progress__lede">
+          FunnyMind no solo entretiene. Registra cada partida para convertir el juego en información útil para el acompañamiento terapéutico.
+        </p>
+        <ul class="checklist">
+          <li>
+            <span class="checklist__mark" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+            Historial por niño, juego y categoría cognitiva
+          </li>
+          <li>
+            <span class="checklist__mark" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+            XP, nivel y precisión en cada sesión
+          </li>
+          <li>
+            <span class="checklist__mark" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+            Vista clínica para médicos y tutores
+          </li>
+        </ul>
+        <button type="button" routerLink="/register" class="btn btn--primary">Crear cuenta</button>
+      </div>
+
+      <div class="progress__visual">
+        <div class="dash-card">
+          <div class="dash-card__head">
+            <span class="dash-avatar">L</span>
+            <div class="dash-identity">
+              <strong>Lucía</strong>
+              <span>6 años · TCE leve</span>
+            </div>
+            <span class="dash-pill">En progreso</span>
+          </div>
+
+          <div class="dash-chart">
+            <div class="dash-chart__head">
+              <span>Progreso por área</span>
+              <strong>Este mes</strong>
+            </div>
+            <div class="bar-row">
+              <span class="bar-row__label">Memoria</span>
+              <div class="bar-row__track"><i style="width: 82%"></i></div>
+              <b>82%</b>
+            </div>
+            <div class="bar-row">
+              <span class="bar-row__label">Atención</span>
+              <div class="bar-row__track"><i style="width: 68%"></i></div>
+              <b>68%</b>
+            </div>
+            <div class="bar-row">
+              <span class="bar-row__label">Velocidad</span>
+              <div class="bar-row__track"><i style="width: 74%"></i></div>
+              <b>74%</b>
+            </div>
+            <div class="bar-row">
+              <span class="bar-row__label">Función ejecutiva</span>
+              <div class="bar-row__track"><i style="width: 56%"></i></div>
+              <b>56%</b>
+            </div>
+          </div>
+
+          <div class="dash-stats">
+            <div><strong>+840</strong><span>XP este mes</span></div>
+            <div><strong>12</strong><span>sesiones</span></div>
+            <div><strong>86%</strong><span>precisión</span></div>
+          </div>
+        </div>
+        <span class="progress__caption">Vista de tutor y clínico</span>
+      </div>
+    </section>
+
+    <section class="section tce" id="tce">
+      <div class="tce__head">
+        <p class="eyebrow">Entender el TCE</p>
+        <h2>Una lesión cambia el camino.<br><span class="serif">No la forma de acompañar.</span></h2>
+        <p class="section__lede">
+          El Traumatismo Craneoencefálico afecta funciones cognitivas, emocionales y físicas. La recuperación varía, pero la estimulación constante marca la diferencia.
+        </p>
+      </div>
+
+      <div class="tce__list">
+        <article class="tce-item">
+          <span class="tce-item__num">01</span>
           <h3>¿Qué es?</h3>
-          <p>El Traumatismo Craneoencefálico es una lesión en la cabeza que afecta el cerebro, causada por un golpe, sacudida o impacto.</p>
-        </div>
-        <div class="tce__card">
-          <span class="tce__icon">📋</span>
+          <p>Una lesión en la cabeza causada por un golpe, sacudida o impacto que afecta el cerebro.</p>
+        </article>
+        <article class="tce-item">
+          <span class="tce-item__num">02</span>
           <h3>Efectos</h3>
-          <p>Puede afectar la función cognitiva, emocional y física. La recuperación varía según la severidad de la lesión.</p>
-        </div>
-        <div class="tce__card">
-          <span class="tce__icon">💪</span>
+          <p>Puede afectar la función cognitiva, emocional y física. La severidad cambia en cada caso.</p>
+        </article>
+        <article class="tce-item">
+          <span class="tce-item__num">03</span>
           <h3>Recuperación</h3>
-          <p>Con el tratamiento adecuado y estimulación constante, muchos niños recuperan habilidades perdidas significativamente.</p>
-        </div>
+          <p>Con tratamiento adecuado y estimulación constante, muchos niños recuperan habilidades significativamente.</p>
+        </article>
       </div>
-      <div class="tce__note">
-        <span class="tce__tag">Leve</span>
-        <span class="tce__tag">Moderado</span>
-        <span class="tce__tag">Grave</span>
-        <span class="tce__tag">No especificado</span>
-      </div>
-    </div>
-  </section>
 
-  <section class="section services" id="services">
-    <div class="section__inner">
-      <h2 class="section__title">Nuestros Servicios</h2>
-      <div class="services__grid">
-        <div class="service-card">
-          <div class="service-card__icon" style="background: var(--coral-soft)">
-            <span>🎯</span>
-          </div>
-          <h3 class="service-card__title">Función Ejecutiva</h3>
-          <p class="service-card__text">Juegos de lógica y estrategia como la Torre de Hanoi que estimulan la planificación y resolución de problemas.</p>
-        </div>
-        <div class="service-card">
-          <div class="service-card__icon" style="background: var(--teal-soft)">
-            <span>👁️</span>
-          </div>
-          <h3 class="service-card__title">Memoria y Atención</h3>
-          <p class="service-card__text">Ejercicios de memoria visual y concentración que ayudan a mejorar la retención y el enfoque.</p>
-        </div>
-        <div class="service-card">
-          <div class="service-card__icon" style="background: var(--yellow-soft)">
-            <span>⚡</span>
-          </div>
-          <h3 class="service-card__title">Velocidad de Procesamiento</h3>
-          <p class="service-card__text">Actividades diseñadas para mejorar los reflejos mentales y la rapidez de respuesta.</p>
-        </div>
-        <div class="service-card">
-          <div class="service-card__icon" style="background: var(--purple-soft)">
-            <span>📊</span>
-          </div>
-          <h3 class="service-card__title">Monitoreo de Progreso</h3>
-          <p class="service-card__text">Sistema de seguimiento detallado para médicos y tutores sobre la evolución del paciente.</p>
-        </div>
+      <div class="tce__tags" aria-label="Clasificaciones del TCE">
+        <span>Leve</span>
+        <span>Moderado</span>
+        <span>Grave</span>
+        <span>No especificado</span>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="section team" id="team">
-    <div class="section__inner">
-      <h2 class="section__title">Equipo de Desarrollo</h2>
-      <div class="team__grid">
-        <div class="team-card">
-          <div class="team-card__avatar" style="background: linear-gradient(135deg, #FF6B6B, #ee5a24)">
-            <span>🎨</span>
-          </div>
-          <h4 class="team-card__role">Diseñador de Juegos</h4>
-          <ul class="team-card__skills">
-            <li>Diseño de juegos</li>
-          </ul>
-          <span class="team-card__name">Andrés F. Castellanos V.</span>
-        </div>
-        <div class="team-card">
-          <div class="team-card__avatar" style="background: linear-gradient(135deg, #4ECDC4, #0abde3)">
-            <span>👨‍💻</span>
-          </div>
-          <h4 class="team-card__role">Desarrollador Full-Stack</h4>
-          <ul class="team-card__skills">
-            <li>Base de datos</li>
-            <li>Analista de seguridad</li>
-            <li>Lógica de juegos</li>
-            <li>Frontend</li>
-            <li>Diseño de la plataforma</li>
-            <li>Backend</li>
-          </ul>
-          <span class="team-card__name">Juan F. Delgadillo V.</span>
-        </div>
-        <div class="team-card">
-          <div class="team-card__avatar" style="background: linear-gradient(135deg, #a29bfe, #6c5ce7)">
-            <span>👩‍⚕️</span>
-          </div>
-          <h4 class="team-card__role">Product Owner</h4>
-          <ul class="team-card__skills">
-            <li>Psicóloga</li>
-            <li>Analista de datos</li>
-            <li>Diseño de juegos</li>
-          </ul>
-          <span class="team-card__name">Luz A. Moreno C.</span>
-        </div>
+    <section class="section team" id="equipo">
+      <div class="team__head">
+        <p class="eyebrow">Equipo de desarrollo</p>
+        <h2>Tres miradas.<br><span class="serif">Un mismo objetivo.</span></h2>
       </div>
-    </div>
-  </section>
 
-  <footer class="footer">
-    <div class="footer__inner">
-      <div class="footer__brand">
-        <span>🧠 FunnyMind</span>
-        <p>Con amor para los niños</p>
+      <div class="team__list">
+        <article class="member">
+          <span class="member__initials member__initials--coral">AC</span>
+          <div class="member__main">
+            <h3>Andrés F. Castellanos V.</h3>
+            <p>Diseñador de juegos</p>
+          </div>
+          <ul class="member__tags"><li>Diseño de juegos</li></ul>
+        </article>
+
+        <article class="member">
+          <span class="member__initials member__initials--teal">JD</span>
+          <div class="member__main">
+            <h3>Juan F. Delgadillo V.</h3>
+            <p>Desarrollador Full-Stack</p>
+          </div>
+          <ul class="member__tags">
+            <li>Backend</li><li>Frontend</li><li>Base de datos</li><li>Seguridad</li><li>Lógica de juegos</li>
+          </ul>
+        </article>
+
+        <article class="member">
+          <span class="member__initials member__initials--violet">LM</span>
+          <div class="member__main">
+            <h3>Luz A. Moreno C.</h3>
+            <p>Product Owner</p>
+          </div>
+          <ul class="member__tags"><li>Psicología</li><li>Análisis de datos</li><li>Diseño de juegos</li></ul>
+        </article>
       </div>
-      <div class="footer__links">
-        <button type="button" routerLink="/register" class="footer__link">Comenzar</button>
-        <a href="#about">¿Quiénes somos?</a>
-        <a href="#about">¿Qué es TCE?</a>
+    </section>
+
+    <section class="cta">
+      <div class="cta__inner">
+        <p class="eyebrow eyebrow--light">Empieza hoy</p>
+        <h2>La rehabilitación también puede sentirse como un juego.</h2>
+        <div class="cta__actions">
+          <button type="button" routerLink="/register" class="btn btn--light btn--lg">Crear cuenta gratis</button>
+          <button type="button" routerLink="/login" class="btn btn--outline-light">Ya tengo cuenta</button>
+        </div>
       </div>
-    </div>
-    <div class="footer__bottom">
-      <p>&copy; 2026 FunnyMind. Todos los derechos reservados.</p>
-    </div>
-  </footer>
+    </section>
+
+    <footer class="footer">
+      <div class="footer__top">
+        <a class="brand brand--footer" routerLink="/" aria-label="FunnyMind inicio">
+          <span class="brand__mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+              <circle cx="16" cy="16" r="5.2" fill="currentColor" stroke="none"/>
+              <circle cx="16" cy="4.8" r="2.2"/>
+              <circle cx="26.4" cy="16" r="2.2"/>
+              <circle cx="16" cy="27.2" r="2.2"/>
+              <circle cx="5.6" cy="16" r="2.2"/>
+              <path d="M16 7v3.6M21.2 12.2l2-2M21.2 19.8l2 2M16 21.4V25M10.8 19.8l-2 2M10.8 12.2l-2-2"/>
+            </svg>
+          </span>
+          <span class="brand__name">FunnyMind</span>
+        </a>
+
+        <p class="footer__line">Juegos terapéuticos para niños con TCE. Hechos para acompañar cada avance.</p>
+
+        <div class="footer__links">
+          <button type="button" (click)="scrollTo('juegos')">Juegos</button>
+          <button type="button" (click)="scrollTo('como-funciona')">Cómo funciona</button>
+          <button type="button" (click)="scrollTo('equipo')">Equipo</button>
+          <button type="button" routerLink="/login">Ingresar</button>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <span>© {{ year }} FunnyMind. Todos los derechos reservados.</span>
+        <span>Diseñado para acompañar, no para presionar.</span>
+      </div>
+    </footer>
+  </div>
 </ion-content>

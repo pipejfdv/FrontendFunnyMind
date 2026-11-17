@@ -39,6 +39,26 @@ export class ApiService {
   }
 
   /*
+  * Solicita un enlace de restablecimiento de contraseña.
+  * La respuesta del backend es siempre generica para no revelar si el usuario existe.
+  * @Params username String nombre de usuario
+  * @Return Observable<void> se completa cuando el backend procesa la solicitud
+  */
+  forgotPassword(username: string): Observable<void> {
+    return this.http.post<any>(`${this.apiUrl}/auth/forgot-password`, { username }).pipe(map(() => {}));
+  }
+
+  /*
+  * Restablece la contraseña usando el token temporal enviado por correo.
+  * @Params token String token JWT del enlace
+  * @Params newPassword String nueva contraseña sin encriptar
+  * @Return Observable<void> se completa cuando la contraseña fue actualizada
+  */
+  resetPassword(token: string, newPassword: string): Observable<void> {
+    return this.http.post<any>(`${this.apiUrl}/auth/reset-password`, { token, newPassword }).pipe(map(() => {}));
+  }
+
+  /*
   * Verifica si el usuario ya completo el registro (wizard).
   * Usado por navigateByRole() para decidir si redirigir al wizard o al dashboard.
   * @Params userId String UUID del usuario
