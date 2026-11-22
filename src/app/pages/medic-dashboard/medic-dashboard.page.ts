@@ -45,11 +45,14 @@ export class MedicDashboardPage {
 
   constructor() {
     this.loadChildren();
-    this.loadAllNews();
     this.api.getCategoriesList().subscribe(cats => this.gameCategories = cats || []);
     this.api.getTceClassifications().subscribe(t => {
       if (Array.isArray(t)) this.tceClassifications = t.filter(item => item.id && item.classification);
     });
+  }
+
+  ionViewWillEnter(): void {
+    this.loadAllNews();
   }
 
   private loadChildren(): void {
